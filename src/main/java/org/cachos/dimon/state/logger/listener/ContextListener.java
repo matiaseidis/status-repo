@@ -14,7 +14,7 @@ public class ContextListener implements ServletContextListener {
 	
 	static Logger logger = Logger.getLogger(ContextListener.class.getName());
 	
-	private static final String DIR_PATH = "/home/meidis/Esritorio/";
+	private static final String DIR_PATH = "/home/meidis/Escritorio/";
 	private static final String FILE_NAME = "test.log";
 
 	private static final String DB_FILE = "DB_FILE";

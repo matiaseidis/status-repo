@@ -36,7 +36,10 @@ public class FileRepo {
 		output = new BufferedWriter(new FileWriter(this.getRepoFile()));
 		output.append(newLine);
 			output.close();
+			System.out.println("new line appended to db file: "+output+" - "+ this.getRepoFile().getAbsolutePath());
+			logger.info("new line appended to db file: "+output+" - "+ this.getRepoFile().getAbsolutePath());
 		} catch (IOException e) {
+			System.out.println("Unable to append new line to repo file");
 			logger.error("Unable to append new line to repo file", e);
 		}
 		return this;

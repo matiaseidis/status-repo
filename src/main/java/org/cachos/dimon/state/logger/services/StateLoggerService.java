@@ -9,17 +9,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.repo.FileRepo;
 
 @Path("/logger")
 public class StateLoggerService {
+	
+	static Logger logger = Logger.getLogger(StateLoggerService.class.getName());
 	
 	@GET
 	@Path("/{eventType}/{comment}")
 	public Response getMsg(@PathParam("eventType") String eventType, @PathParam("comment") String comment) {
  
 		String output = eventType + " - " + comment;
-
+		logger.info("about to append line to db file: "+output);
+		System.out.println("about to append line to db file: "+output);
 		FileRepo.getInstance().append(output);
  
 		return Response.status(200).entity(output).build();
