@@ -8,6 +8,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.cachos.dimon.state.logger.repo.FileRepo;
 
 public class ContextListener implements ServletContextListener {
 	
@@ -39,8 +40,7 @@ public class ContextListener implements ServletContextListener {
 			}
 		}
 		
-		sce.getServletContext().setAttribute(DB_FILE, file);
-
+		FileRepo.getInstance().setRepoFile(file);
 	}
 
 	public void contextDestroyed(ServletContextEvent sce) {
