@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.log4j.Logger;
+import org.cachos.dimon.state.logger.event.DimonEvent;
 
 public class FileRepo {
 
@@ -31,15 +32,16 @@ public class FileRepo {
 		return INSTANCE;
 	}
 
-	public FileRepo append(String newLine) {
+	public FileRepo log(DimonEvent event) {
 		Writer output;
 		try {
+			String plainEvent = event.toString();
 			output = new BufferedWriter(
 					new FileWriter(this.getRepoFile(), true));
-			output.append(newLine);
+			output.append(plainEvent);
 			output.append(System.getProperty("line.separator"));
 			output.close();
-			logger.info("new line appended to db file: " + output + " - "
+			logger.info("new line appended to db file: " + plainEvent+ " - "
 					+ this.getRepoFile().getAbsolutePath());
 		} catch (IOException e) {
 			logger.error("Unable to append new line to repo file", e);
