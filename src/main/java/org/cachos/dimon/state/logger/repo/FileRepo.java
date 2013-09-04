@@ -9,14 +9,15 @@ import java.io.Writer;
 import org.apache.log4j.Logger;
 
 public class FileRepo {
-	
+
 	static Logger logger = Logger.getLogger(FileRepo.class.getName());
 
 	private File repoFile = null;
-	
+
 	private static final FileRepo INSTANCE = new FileRepo();
-	
-	private FileRepo(){}
+
+	private FileRepo() {
+	}
 
 	public File getRepoFile() {
 		return repoFile;
@@ -33,13 +34,14 @@ public class FileRepo {
 	public FileRepo append(String newLine) {
 		Writer output;
 		try {
-		output = new BufferedWriter(new FileWriter(this.getRepoFile()));
-		output.append(newLine);
+			output = new BufferedWriter(
+					new FileWriter(this.getRepoFile(), true));
+			output.append(newLine);
+			output.append(System.getProperty("line.separator"));
 			output.close();
-			System.out.println("new line appended to db file: "+output+" - "+ this.getRepoFile().getAbsolutePath());
-			logger.info("new line appended to db file: "+output+" - "+ this.getRepoFile().getAbsolutePath());
+			logger.info("new line appended to db file: " + output + " - "
+					+ this.getRepoFile().getAbsolutePath());
 		} catch (IOException e) {
-			System.out.println("Unable to append new line to repo file");
 			logger.error("Unable to append new line to repo file", e);
 		}
 		return this;
