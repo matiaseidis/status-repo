@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.Writer;
 
 import org.apache.log4j.Logger;
-import org.cachos.dimon.state.logger.event.DimonEvent;
+import org.cachos.dimon.state.logger.event.ClientEvent;
 
 public class FileRepo {
 
@@ -32,7 +32,7 @@ public class FileRepo {
 		return INSTANCE;
 	}
 
-	public FileRepo log(DimonEvent event) {
+	public FileRepo log(ClientEvent event) {
 		Writer output;
 		try {
 			String plainEvent = event.toString();
