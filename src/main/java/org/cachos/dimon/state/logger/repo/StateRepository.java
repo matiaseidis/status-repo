@@ -20,22 +20,24 @@ public class StateRepository implements Serializable {
 	static Logger logger = Logger.getLogger(StateRepository.class.getName());
 
 	private Map<String, RetrievalPlan> plansMap = null;
-	private Map<String, List<ClientEvent>> eventsMap = null;
+	private Map<String, List<ClientEvent>> eventsByTypeMap = null;
+	private Map<String, List<ClientEvent>> eventsByClientMap = null;
 
 	public StateRepository() {
 		plansMap = new HashMap<String, RetrievalPlan>();
-		eventsMap = new HashMap<String, List<ClientEvent>>();
+		eventsByTypeMap = new HashMap<String, List<ClientEvent>>();
+		setEventsByClientMap(new HashMap<String, List<ClientEvent>>()); 
 	}
 	
 	public <T extends ClientEvent> List<ClientEvent> getEvents(T event) {
 		return getEvents(event.getClass());
 	}
 
-	private <T extends ClientEvent> List<ClientEvent> getEventsByClassSimpleName(Class event) {
+	private <T extends ClientEvent> List<ClientEvent> getEventsByClassSimpleName(Class<T> event) {
 		return getEventsMap().get(event.getSimpleName());
 	}
 	
-	public <T extends ClientEvent> List<ClientEvent> getEvents(Class eventClass) {
+	public <T extends ClientEvent> List<ClientEvent> getEvents(Class<T> eventClass) {
 		List<ClientEvent> result = getEventsByClassSimpleName(eventClass);
 		if(result == null) {
 			result = new ArrayList<ClientEvent>();
@@ -45,11 +47,32 @@ public class StateRepository implements Serializable {
 	}
 	
 	public Map<String, List<ClientEvent>> getEventsMap() {
-		return eventsMap;
+		return eventsByTypeMap;
 	}
 
 	public Map<String, RetrievalPlan> getPlansMap() {
 		return plansMap;
+	}
+
+	public List<ClientEvent> getEventsByClient(String ip, String port) {
+		List<ClientEvent> result = this.getEventsByClientMap().get(addressKey(ip, port));
+		if(result == null) {
+			result = new ArrayList<ClientEvent>();
+			this.getEventsByClientMap().put(addressKey(ip, port), result);
+		}
+		return result;
+	}
+
+	private String addressKey(String ip, String port) {
+		return ip+":"+port;
+	}
+
+	public Map<String, List<ClientEvent>> getEventsByClientMap() {
+		return eventsByClientMap;
+	}
+
+	public void setEventsByClientMap(Map<String, List<ClientEvent>> eventsByClientMap) {
+		this.eventsByClientMap = eventsByClientMap;
 	}
 	
 	

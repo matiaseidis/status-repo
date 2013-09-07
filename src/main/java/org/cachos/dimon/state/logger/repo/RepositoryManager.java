@@ -1,10 +1,14 @@
 package org.cachos.dimon.state.logger.repo;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
+import org.cachos.dimon.state.logger.event.AliveEvent;
 import org.cachos.dimon.state.logger.event.ClientEvent;
 import org.cachos.dimon.state.logger.event.PullEvent;
 import org.cachos.dimon.state.logger.event.PushEvent;
+import org.cachos.dimon.state.logger.event.StartUpEvent;
 import org.cachos.dimon.state.logger.transaction.ClientActivityPullEventRegistration;
 import org.cachos.dimon.state.logger.transaction.ClientActivityPushEventRegistration;
 import org.cachos.dimon.state.logger.transaction.ClientEventRegistration;
@@ -43,13 +47,15 @@ public class RepositoryManager {
 	}
 
 	public void logPullEvent(PullEvent event) {
-		this.getPrevayler().execute(new ClientActivityPullEventRegistration(event));
+		this.getPrevayler().execute(
+				new ClientActivityPullEventRegistration(event));
 	}
 
 	public void logPushEvent(PushEvent event) {
-		this.getPrevayler().execute(new ClientActivityPushEventRegistration(event));
+		this.getPrevayler().execute(
+				new ClientActivityPushEventRegistration(event));
 	}
-	
+
 	public void log(ClientEvent event) {
 		this.getPrevayler().execute(new ClientEventRegistration(event));
 	}
@@ -68,5 +74,19 @@ public class RepositoryManager {
 
 	public void setConf(Conf conf) {
 		this.conf = conf;
+	}
+
+	public boolean isUp(String ip, String port) {
+		List<ClientEvent> eventsByClient = getPrevayler().prevalentSystem()
+				.getEventsByClient(ip, port);
+		
+		if(eventsByClient.isEmpty()) {
+			return false;
+		}
+		
+		
+		ClientEvent lastClientEvent = eventsByClient.get(eventsByClient.size()-1);
+		return lastClientEvent instanceof StartUpEvent
+				|| lastClientEvent instanceof AliveEvent;
 	}
 }

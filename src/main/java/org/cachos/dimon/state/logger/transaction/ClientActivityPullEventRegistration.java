@@ -20,7 +20,7 @@ public class ClientActivityPullEventRegistration extends
 	protected void updateParticipant(RetrievalPlan plan,
 			PullEvent event) {
 		Puller puller = plan.getPuller();
-		puller.setProgress(event.getProgress());
+		puller.setByteCurrent(event.getByteCurrent());
 	}
 
 }

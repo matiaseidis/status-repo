@@ -20,7 +20,7 @@ public class ClientActivityPushEventRegistration extends
 	protected void updateParticipant(RetrievalPlan plan,
 			PushEvent event) {
 		Pusher pusher = plan.getPusher(event.getId());
-		pusher.setProgress(event.getProgress());
+		pusher.setByteCurrent(event.getByteCurrent());
 	}
 
 }

@@ -36,6 +36,9 @@ public class ClientEventRegistration<T extends ClientEvent> implements
 	public void executeOn(StateRepository repo, Date date) {
 		List<ClientEvent> events = repo.getEvents(event);
 		events.add(event);
+		
+		List<ClientEvent> clientLifeCycleEvents = repo.getEventsByClient(event.getIp(), event.getPort()); 
+		clientLifeCycleEvents.add(event);
 		logger.debug("Succesfully logged event of type "+event.getClass().getSimpleName()+" by client "+event.getIp()+":"+event.getPort());
 	}
 }

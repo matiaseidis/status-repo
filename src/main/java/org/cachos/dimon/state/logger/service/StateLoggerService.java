@@ -19,43 +19,78 @@ import org.cachos.dimon.state.logger.repo.RepositoryManager;
 @Path("/logger")
 public class StateLoggerService {
 
+	private static final String planParticipantUriSuffix = "/{ip}/{port}/{planId}/{pullerId}/{byteCurrent}/{byteFrom}/{byteTo}";
 	static Logger logger = Logger.getLogger(StateLoggerService.class.getName());
-	
+
 	@GET
 	@Path("/plan")
 	@Produces(MediaType.APPLICATION_JSON)
-	public RetrievalPlan getDemoPlan(){
-		RetrievalPlan plan = new DemoRetrievalPlanFactory().createDemoRetrievalPlan();
+	public RetrievalPlan getDemoPlan() {
+		RetrievalPlan plan = new DemoRetrievalPlanFactory()
+				.createDemoRetrievalPlan();
 		return plan;
 	}
-	
+
 	@GET
 	@Path("/plan/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public RetrievalPlan getPlan(@PathParam("id") String id){
-		return RepositoryManager.getInstance().getPrevayler().prevalentSystem().getPlansMap().get(id);
+	public RetrievalPlan getPlan(@PathParam("id") String id) {
+		return RepositoryManager.getInstance().getPrevayler().prevalentSystem()
+				.getPlansMap().get(id);
 	}
-	
-	@GET
-	@Path("/pull/{ip}/{port}/{planId}/{pullerId}/{progress}")
-	public Response logPullEvent(@PathParam("ip") String ip,
-			@PathParam("port") String port, @PathParam("planId") String planId, @PathParam("pullerId") int pullerId, @PathParam("progress") int progress) {
 
-		RepositoryManager.getInstance().logPullEvent(new PullEvent(ip, port, planId, pullerId, progress));
-		
+	@GET
+	@Path("/{action}/{ip}/{port}/{planId}/{pullerId}/{byteCurrent}/{byteFrom}/{byteTo}")
+	public Response logPlanParticipantEvent(@PathParam("action") String action,
+			@PathParam("ip") String ip, @PathParam("port") String port,
+			@PathParam("planId") String planId,
+			@PathParam("participantId") int participantId,
+			@PathParam("byteCurrent") long byteCurrent,
+			@PathParam("byteFrom") long byteFrom,
+			@PathParam("byteTo") long byteTo) {
+
+		if ("push".equalsIgnoreCase(action)) {
+			RepositoryManager.getInstance().logPushEvent(new PushEvent(ip, port, planId, participantId, byteCurrent, byteFrom, byteTo));
+		} else {
+			RepositoryManager.getInstance().logPullEvent(new PullEvent(ip, port, planId, participantId, byteCurrent, byteFrom, byteTo));
+		}
+
+
 		return ok();
 	}
-	
-	@GET
-	@Path("/push/{ip}/{port}/{planId}/{pusherId}/{progress}")
-	public Response logPushEvent(@PathParam("ip") String ip,
-			@PathParam("port") String port, @PathParam("planId") String planId, @PathParam("pusherId") int pullerId, @PathParam("progress") int progress) {
 
-		RepositoryManager.getInstance().logPushEvent(new PushEvent(ip, port, planId, pullerId, progress));
-		
-		return ok();
-	}
-		
+//	@GET
+//	@Path("/pull" + planParticipantUriSuffix)
+//	public Response logPullEvent(@PathParam("ip") String ip,
+//			@PathParam("port") String port, @PathParam("planId") String planId,
+//			@PathParam("pullerId") int pullerId,
+//			@PathParam("byteCurrent") long byteCurrent,
+//			@PathParam("byteFrom") long byteFrom,
+//			@PathParam("byteTo") long byteTo) {
+//
+//		RepositoryManager.getInstance().logPullEvent(
+//				new PullEvent(ip, port, planId, pullerId, byteCurrent,
+//						byteFrom, byteTo));
+//
+//		return ok();
+//	}
+//
+//	@GET
+//	@Path("/push" + planParticipantUriSuffix)
+//	public Response logPushEvent(@PathParam("ip") String ip,
+//			@PathParam("port") String port, @PathParam("planId") String planId,
+//			@PathParam("pusherId") int pusherId,
+//			@PathParam("byteCurrent") long byteCurrent,
+//			@PathParam("byteFrom") long byteFrom,
+//			@PathParam("byteTo") long byteTo) {
+//
+//		RepositoryManager.getInstance().logPushEvent(
+//				new PushEvent(ip, port, planId, pusherId, byteCurrent,
+//						byteFrom, byteTo));
+//
+//		return ok();
+//	}
+
 	@GET
 	@Path("/start/{ip}/{port}")
 	public Response logStartUp(@PathParam("ip") String ip,
@@ -64,7 +99,7 @@ public class StateLoggerService {
 		RepositoryManager.getInstance().log(new StartUpEvent(ip, port));
 		return ok();
 	}
-	
+
 	@GET
 	@Path("/stop/{ip}/{port}")
 	public Response logShutDown(@PathParam("ip") String ip,
@@ -73,7 +108,7 @@ public class StateLoggerService {
 		RepositoryManager.getInstance().log(new ShutDownEvent(ip, port));
 		return ok();
 	}
-	
+
 	@GET
 	@Path("/alive/{ip}/{port}")
 	public Response logAlive(@PathParam("ip") String ip,
