@@ -7,4 +7,10 @@ public class PullEvent extends ClientActivityEvent {
 		// TODO Auto-generated constructor stub
 	}
 
+	public PullEvent(String ip, String port, String planId, int id, int progress) {
+		super(ip, port, planId, id, progress);
+		// TODO Auto-generated constructor stub
+	}
+
+	
 }

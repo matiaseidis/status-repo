@@ -43,7 +43,7 @@ public class StateRepository implements Serializable {
 		}
 		return result;
 	}
-
+	
 	public Map<String, List<ClientEvent>> getEventsMap() {
 		return eventsMap;
 	}

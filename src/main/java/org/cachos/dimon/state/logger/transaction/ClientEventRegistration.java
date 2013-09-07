@@ -8,7 +8,7 @@ import org.cachos.dimon.state.logger.event.ClientEvent;
 import org.cachos.dimon.state.logger.repo.StateRepository;
 import org.prevayler.Transaction;
 
-public class ClientEventRegistration implements
+public class ClientEventRegistration<T extends ClientEvent> implements
 		Transaction<StateRepository> {
 	
 	static Logger logger = Logger.getLogger(ClientEventRegistration.class.getName());
@@ -19,9 +19,17 @@ public class ClientEventRegistration implements
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private ClientEvent event;
+	private T event;
 	
-	public ClientEventRegistration(ClientEvent event) {
+	public T getEvent() {
+		return event;
+	}
+
+	public void setEvent(T event) {
+		this.event = event;
+	}
+
+	public ClientEventRegistration(T event) {
 		this.event = event;
 	}
 	

@@ -32,4 +32,13 @@ public class RetrievalPlan {
 		this.puller = puller;
 	}
 
+	public Pusher getPusher(int id) {
+		for(Pusher pusher : this.getPushers()){
+			if(pusher.getId() == id) {
+				return pusher;
+			}
+		}
+		return null;
+	}
+
 }

@@ -3,6 +3,10 @@ package org.cachos.dimon.state.logger.repo;
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
 import org.cachos.dimon.state.logger.event.ClientEvent;
+import org.cachos.dimon.state.logger.event.PullEvent;
+import org.cachos.dimon.state.logger.event.PushEvent;
+import org.cachos.dimon.state.logger.transaction.ClientActivityPullEventRegistration;
+import org.cachos.dimon.state.logger.transaction.ClientActivityPushEventRegistration;
 import org.cachos.dimon.state.logger.transaction.ClientEventRegistration;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
@@ -38,6 +42,14 @@ public class RepositoryManager {
 		return instance;
 	}
 
+	public void logPullEvent(PullEvent event) {
+		this.getPrevayler().execute(new ClientActivityPullEventRegistration(event));
+	}
+
+	public void logPushEvent(PushEvent event) {
+		this.getPrevayler().execute(new ClientActivityPushEventRegistration(event));
+	}
+	
 	public void log(ClientEvent event) {
 		this.getPrevayler().execute(new ClientEventRegistration(event));
 	}

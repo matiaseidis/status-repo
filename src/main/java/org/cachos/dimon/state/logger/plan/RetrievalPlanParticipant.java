@@ -9,7 +9,7 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private long id;
+	private int id;
 	private String ip;
 	private String port;
 	private int progress;
@@ -47,12 +47,12 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	}
 
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 }
