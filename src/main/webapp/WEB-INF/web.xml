@@ -8,6 +8,11 @@
 	<listener>
 		<listener-class>org.cachos.dimon.state.logger.listener.ContextListener</listener-class>
 	</listener>
+	
+<!-- 	<servlet> -->
+<!-- 	<servlet-name>view</servlet-name> -->
+<!-- 	<servlet-class>org.cachos.dimon.state.logger.DummyView</servlet-class> -->
+<!-- 	</servlet> -->
 
 	<servlet>
 		<servlet-name>jersey-serlvet</servlet-name>
@@ -18,6 +23,10 @@
 			<param-name>com.sun.jersey.config.property.packages</param-name>
 			<param-value>org.cachos.dimon.state.logger.service</param-value>
 		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
@@ -25,6 +34,10 @@
 		<servlet-name>jersey-serlvet</servlet-name>
 		<url-pattern>/service/*</url-pattern>
 	</servlet-mapping>
+	
+	<welcome-file-list>
+	<welcome-file>/index.jsp</welcome-file>
+	</welcome-file-list>
 
 
 </web-app>

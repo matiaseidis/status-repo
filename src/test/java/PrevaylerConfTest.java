@@ -9,53 +9,54 @@ import org.cachos.dimon.state.logger.Conf;
 import org.cachos.dimon.state.logger.event.ClientEvent;
 import org.cachos.dimon.state.logger.event.StartUpEvent;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
-import org.junit.Before;
 import org.junit.Test;
 
-
 public class PrevaylerConfTest extends TestCase {
-	
+
 	static Logger logger = Logger.getLogger(PrevaylerConfTest.class.getName());
 	private String confTestPath = "/test-conf.properties";
 
-	public void cleanUp(){
-		Conf testConf = new Conf(confTestPath);
+	public void cleanUp(Conf testConf) {
 		try {
 			FileUtils.cleanDirectory(new File(testConf.getPrevalenceBase()));
-			logger.debug("Dir cleanned: "+testConf.getPrevalenceBase());
+			logger.debug("Dir cleanned: " + testConf.getPrevalenceBase());
 		} catch (IOException e) {
-			logger.error("unable to clean test prevalence dir: "+testConf.getPrevalenceBase(), e);
+			logger.error(
+					"unable to clean test prevalence dir: "
+							+ testConf.getPrevalenceBase(), e);
 			TestCase.fail();
 		}
 	}
-	
-	@Test
-	public void testPrevalenceConfigurationWorks(){
 
-		cleanUp();
-		
+	@Test
+	public void testPrevalenceConfigurationWorks() {
+
 		Conf testConf = new Conf(confTestPath);
-		RepositoryManager repo = RepositoryManager.getInstance(testConf);
-//		repo.setConf(testConf);
+		cleanUp(testConf);
+
+		RepositoryManager repo = null;
+
+		try {
+			repo = RepositoryManager.getInstance(testConf).open();
+		} catch (Exception e) {
+			e.printStackTrace();
+			TestCase.fail();
+		}
+
 		ClientEvent event = new StartUpEvent("test-ip", "test-port");
-		logger.debug("a verrrrrr: "+repo.getConf().getPrevalenceBase());
 		
-		assertSame(
-				1, 
-				repo.getPrevayler().prevalentSystem().getEvents().get(
-						event.getClass().getSimpleName()
-						).size());
-//		repo.log(event);
-//		assertSame(
-//				1, 
-//				repo.getPrevayler().prevalentSystem().getEvents().get(
-//						event.getClass().getSimpleName()
-//						).size());
+		int size = repo.getPrevayler().prevalentSystem().getEvents(event)
+				.size();
+
+		assertSame(0, size);
 		
+		repo.log(event);
+
+		size = repo.getPrevayler().prevalentSystem().getEvents(event)
+				.size();
 		
-		
-		
+		assertSame(1, size);
+
 	}
-	
 
 }

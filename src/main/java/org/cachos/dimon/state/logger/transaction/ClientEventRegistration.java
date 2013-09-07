@@ -1,6 +1,5 @@
 package org.cachos.dimon.state.logger.transaction;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,11 +26,7 @@ public class ClientEventRegistration implements
 	}
 	
 	public void executeOn(StateRepository repo, Date date) {
-		List<ClientEvent> events = repo.getEvents().get(event.getClass().getSimpleName());
-		if(events == null) {
-			events = new ArrayList<ClientEvent>();
-			repo.getEvents().put(event.getClass().getSimpleName(), events);
-		}
+		List<ClientEvent> events = repo.getEvents(event);
 		events.add(event);
 		logger.debug("Succesfully logged event of type "+event.getClass().getSimpleName()+" by client "+event.getIp()+":"+event.getPort());
 	}

@@ -8,38 +8,36 @@ import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
 
 public class RepositoryManager {
-	
+
 	static Logger logger = Logger.getLogger(RepositoryManager.class.getName());
 
-	private static final RepositoryManager INSTANCE = new RepositoryManager();
+	private static RepositoryManager instance = new RepositoryManager();
 	private Prevayler<StateRepository> prevayler = null;
 	private Conf conf;
-	
-	private RepositoryManager(){
-		this.setConf(new Conf());
-		setup();
+
+	private RepositoryManager() {
 	}
-	
-	private void setup() {
-		try {
-			String prevalenceBaseDir = this.getConf().getPrevalenceBase();
-			logger.debug("About to create prevayler in: " + prevalenceBaseDir);
-			this.setPrevayler(PrevaylerFactory.createPrevayler(new StateRepository(), prevalenceBaseDir));
-		} catch (Exception e) {
-			logger.error("Unable to create prevayler, aborting...", e);
-		}
+
+	public RepositoryManager open() throws Exception {
+		prevayler = PrevaylerFactory.createPrevayler(new StateRepository(),
+				this.getConf().getPrevalenceBase());
+		return instance;
+	}
+
+	public RepositoryManager close() throws Exception {
+		prevayler.close();
+		return instance;
 	}
 
 	public static RepositoryManager getInstance() {
-		return INSTANCE;
+		return instance;
 	}
-	
+
 	public static RepositoryManager getInstance(Conf conf) {
-		INSTANCE.setConf(conf);
-		logger.debug("22222222222222222222: "+INSTANCE.getConf().getPrevalenceBase());
-		return INSTANCE;
+		instance.setConf(conf);
+		return instance;
 	}
-	
+
 	public void log(ClientEvent event) {
 		this.getPrevayler().execute(new ClientEventRegistration(event));
 	}

@@ -1,0 +1,27 @@
+#outerBox {
+//	background-color:red;
+}
+#pullerBox {
+	float:left;
+	width:280px;
+}
+#pushersBox {
+	padding-left: 300px;
+	margin-left:15px;
+}
+.bold {
+	font-weight:bold;
+}
+.pusherBox, #pullerBox {
+	margin: 10px;
+//	border: 1px solid #666;
+} 
+#pullerBox {
+//	background-color:green;
+}
+.pusherBox{
+//	background-color:yellow;
+width:300px;
+float:left;
+height:80px;
+}
