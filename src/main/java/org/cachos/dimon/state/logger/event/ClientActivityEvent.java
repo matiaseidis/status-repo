@@ -9,7 +9,7 @@ public abstract class ClientActivityEvent extends ClientEvent {
 	 */
 	private static final long serialVersionUID = 1L;
 	public ClientActivityEvent(String ip, String port, String planId, int id,
-			long byteCurrent, long byteFrom, long byteTo) {
+			long byteFrom, long byteTo, long byteCurrent) {
 		super(ip, port);
 		this.planId = planId;
 		this.id = id;

@@ -9,7 +9,7 @@ public class PushEvent extends ClientActivityEvent {
 
 	public PushEvent(String ip, String port, String planId, int id,
 			long byteCurrent, long byteFrom, long byteTo) {
-		super(ip, port, planId, id, byteCurrent, byteFrom, byteTo);
+		super(ip, port, planId, id, byteFrom, byteTo, byteCurrent);
 		// TODO Auto-generated constructor stub
 	}
 

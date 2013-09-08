@@ -47,6 +47,7 @@ public class RepositoryManager {
 	}
 
 	public void logPullEvent(PullEvent event) {
+		System.out.println("RepositoryManager.logPullEvent()");
 		this.getPrevayler().execute(
 				new ClientActivityPullEventRegistration(event));
 	}
@@ -57,6 +58,7 @@ public class RepositoryManager {
 	}
 
 	public void log(ClientEvent event) {
+		System.out.println("RepositoryManager.log()");
 		this.getPrevayler().execute(new ClientEventRegistration(event));
 	}
 
@@ -88,5 +90,9 @@ public class RepositoryManager {
 		ClientEvent lastClientEvent = eventsByClient.get(eventsByClient.size()-1);
 		return lastClientEvent instanceof StartUpEvent
 				|| lastClientEvent instanceof AliveEvent;
+	}
+
+	public boolean isDown(String ip, String port) {
+		return !isUp(ip, port);
 	}
 }

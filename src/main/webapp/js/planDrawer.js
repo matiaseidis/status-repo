@@ -5,7 +5,7 @@ $(function() {
 		$("#pushersBox").empty();
 		$.ajax({
 			dataType : "json",
-			url : "http://localhost:8080/service/logger/plan",
+			url : "/service/logger/plan",
 			// data: data,
 			success : function(data) {
 				drawPuller(data.puller);

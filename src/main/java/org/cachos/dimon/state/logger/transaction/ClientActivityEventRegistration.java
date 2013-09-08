@@ -21,6 +21,10 @@ public abstract class ClientActivityEventRegistration<T extends ClientActivityEv
 	public void executeOn(StateRepository repo, Date date) {
 		super.executeOn(repo, date);
 		RetrievalPlan plan = repo.getPlansMap().get(this.getEvent().getPlanId());
+		if(plan == null) {
+			plan = new RetrievalPlan();
+			repo.getPlansMap().put(this.getEvent().getPlanId(), plan);
+		}
 		this.updateParticipant(plan, this.getEvent());
 	}
 

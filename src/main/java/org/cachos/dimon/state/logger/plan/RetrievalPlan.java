@@ -1,11 +1,12 @@
 package org.cachos.dimon.state.logger.plan;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RetrievalPlan {
 
 	private long id;
-	private List<Pusher> pushers;
+	private List<Pusher> pushers = new ArrayList<Pusher>();
 	private Puller puller;
 
 	public long getId() {

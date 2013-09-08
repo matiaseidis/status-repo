@@ -16,6 +16,22 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	private long byteFrom;
 	private long byteTo;
 	
+	public RetrievalPlanParticipant(String ip, String port) {
+		super();
+		this.ip = ip;
+		this.port = port;
+	}
+	
+	public RetrievalPlanParticipant(String ip, String port, int id,
+			long byteFrom, long byteTo, long byteCurrent) {
+		super();
+		this.ip = ip;
+		this.port = port;
+		this.id = id;
+		this.byteFrom = byteFrom;
+		this.byteTo = byteTo;
+		this.byteCurrent = byteCurrent;
+	}
 	
 	public long getByteCurrent() {
 		return byteCurrent;
@@ -24,15 +40,8 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	public void setByteCurrent(long byteCurrent) {
 		this.byteCurrent = byteCurrent;
 	}
-
-	public RetrievalPlanParticipant(String ip, String port) {
-		super();
-		this.ip = ip;
-		this.port = port;
-	}
 	
 	public long getProgress() {
-//		return new ProgressPercentageCalculator(byteFrom, byteTo, byteCurrent).calculate();
 		return new ProgressPercentageCalculator(this).calculate();
 	}
 

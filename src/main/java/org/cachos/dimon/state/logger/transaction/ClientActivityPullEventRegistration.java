@@ -20,6 +20,10 @@ public class ClientActivityPullEventRegistration extends
 	protected void updateParticipant(RetrievalPlan plan,
 			PullEvent event) {
 		Puller puller = plan.getPuller();
+		if(puller == null) {
+			puller = new Puller(event.getIp(), event.getPort(), event.getId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent());
+			plan.setPuller(puller);
+		}
 		puller.setByteCurrent(event.getByteCurrent());
 	}
 

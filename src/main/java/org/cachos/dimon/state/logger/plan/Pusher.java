@@ -6,6 +6,14 @@ public class Pusher extends RetrievalPlanParticipant {
 		super(ip, port);
 		// TODO Auto-generated constructor stub
 	}
+
+	public Pusher(String ip, String port, int id, long byteFrom, long byteTo,
+			long byteCurrent) {
+		super(ip, port, id, byteFrom, byteTo, byteCurrent);
+		// TODO Auto-generated constructor stub
+	}
+	
+	
 	
 
 }
