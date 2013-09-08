@@ -111,7 +111,7 @@ Conf testConf = new Conf(this.getConfTestPath());
 		Assert.assertTrue(repo.isUp(ip, port));
 		
 		String planId = "test-retrieval-plan";
-		int clientId = 1;
+		String clientId = "1";
 		long byteCurrent = 0;
 		long byteFrom = 0;
 		long byteTo = 99999;
@@ -130,9 +130,9 @@ Conf testConf = new Conf(this.getConfTestPath());
 		Assert.assertTrue(eventsByClient.get(1) instanceof PullEvent);
 		Assert.assertTrue(eventsByClient.get(2) instanceof PullEvent);
 		
-		PushEvent firstPusherEvent = new PushEvent("3.3.3.3", "333", planId, 2, byteFrom, byteTo, byteCurrent);
-		PushEvent secondPusherEvent = new PushEvent("4.3.3.3", "333", planId, 3, byteFrom, byteTo, byteCurrent);
-		PushEvent thirdPusherEvent = new PushEvent("5.3.3.3", "333", planId, 4, byteFrom, byteTo, byteCurrent);
+		PushEvent firstPusherEvent = new PushEvent("3.3.3.3", "333", planId, "2", byteFrom, byteTo, byteCurrent);
+		PushEvent secondPusherEvent = new PushEvent("4.3.3.3", "333", planId, "3", byteFrom, byteTo, byteCurrent);
+		PushEvent thirdPusherEvent = new PushEvent("5.3.3.3", "333", planId, "4", byteFrom, byteTo, byteCurrent);
 		
 		repo.logPushEvent(firstPusherEvent);
 		repo.logPushEvent(secondPusherEvent);
@@ -142,12 +142,12 @@ Conf testConf = new Conf(this.getConfTestPath());
 		
 		Assert.assertSame(3, planFromRepo.getPushers().size());
 		int newCurrentByte = 150; 
-		PushEvent thirdPusherUpdateEvent = new PushEvent("5.3.3.3", "333", planId, 4, byteFrom, byteTo, newCurrentByte);
+		PushEvent thirdPusherUpdateEvent = new PushEvent("5.3.3.3", "333", planId, "4", byteFrom, byteTo, newCurrentByte);
 		
 		Assert.assertSame(3, planFromRepo.getPushers().size());
-		Assert.assertNotSame(newCurrentByte, planFromRepo.getPusher(thirdPusherEvent.getId()).getByteCurrent());
+		Assert.assertNotSame(newCurrentByte, planFromRepo.getPusher(thirdPusherEvent.getClientId()).getByteCurrent());
 		repo.logPushEvent(thirdPusherUpdateEvent);
-		Assert.assertSame(4, thirdPusherEvent.getId());
+		Assert.assertEquals("4", thirdPusherEvent.getClientId());
 		
 
 	}

@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.cachos.dimon.state.logger.Conf;
 import org.cachos.dimon.state.logger.event.AliveEvent;
 import org.cachos.dimon.state.logger.event.PullEvent;
 import org.cachos.dimon.state.logger.event.PushEvent;
@@ -40,85 +41,40 @@ public class StateLoggerService {
 	}
 
 	@GET
-	@Path("/{action}/{ip}/{port}/{planId}/{pullerId}/{byteCurrent}/{byteFrom}/{byteTo}")
+	@Path("/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}")
 	public Response logPlanParticipantEvent(@PathParam("action") String action,
 			@PathParam("ip") String ip, @PathParam("port") String port,
 			@PathParam("planId") String planId,
-			@PathParam("participantId") int participantId,
+			@PathParam("clientId") String clientId,
 			@PathParam("byteCurrent") long byteCurrent,
 			@PathParam("byteFrom") long byteFrom,
 			@PathParam("byteTo") long byteTo) {
 
+		RepositoryManager repo = RepositoryManager.getInstance(new Conf());
+		
 		if ("push".equalsIgnoreCase(action)) {
-			RepositoryManager.getInstance().logPushEvent(new PushEvent(ip, port, planId, participantId, byteCurrent, byteFrom, byteTo));
+			repo.logPushEvent(new PushEvent(ip, port, planId, clientId, byteCurrent, byteFrom, byteTo));
 		} else {
-			RepositoryManager.getInstance().logPullEvent(new PullEvent(ip, port, planId, participantId, byteCurrent, byteFrom, byteTo));
+			repo.logPullEvent(new PullEvent(ip, port, planId, clientId, byteCurrent, byteFrom, byteTo));
 		}
-
-
-		return ok();
-	}
-
-//	@GET
-//	@Path("/pull" + planParticipantUriSuffix)
-//	public Response logPullEvent(@PathParam("ip") String ip,
-//			@PathParam("port") String port, @PathParam("planId") String planId,
-//			@PathParam("pullerId") int pullerId,
-//			@PathParam("byteCurrent") long byteCurrent,
-//			@PathParam("byteFrom") long byteFrom,
-//			@PathParam("byteTo") long byteTo) {
-//
-//		RepositoryManager.getInstance().logPullEvent(
-//				new PullEvent(ip, port, planId, pullerId, byteCurrent,
-//						byteFrom, byteTo));
-//
-//		return ok();
-//	}
-//
-//	@GET
-//	@Path("/push" + planParticipantUriSuffix)
-//	public Response logPushEvent(@PathParam("ip") String ip,
-//			@PathParam("port") String port, @PathParam("planId") String planId,
-//			@PathParam("pusherId") int pusherId,
-//			@PathParam("byteCurrent") long byteCurrent,
-//			@PathParam("byteFrom") long byteFrom,
-//			@PathParam("byteTo") long byteTo) {
-//
-//		RepositoryManager.getInstance().logPushEvent(
-//				new PushEvent(ip, port, planId, pusherId, byteCurrent,
-//						byteFrom, byteTo));
-//
-//		return ok();
-//	}
-
-	@GET
-	@Path("/start/{ip}/{port}")
-	public Response logStartUp(@PathParam("ip") String ip,
-			@PathParam("port") String port) {
-
-		RepositoryManager.getInstance().log(new StartUpEvent(ip, port));
-		return ok();
-	}
-
-	@GET
-	@Path("/stop/{ip}/{port}")
-	public Response logShutDown(@PathParam("ip") String ip,
-			@PathParam("port") String port) {
-
-		RepositoryManager.getInstance().log(new ShutDownEvent(ip, port));
-		return ok();
-	}
-
-	@GET
-	@Path("/alive/{ip}/{port}")
-	public Response logAlive(@PathParam("ip") String ip,
-			@PathParam("port") String port) {
-
-		RepositoryManager.getInstance().log(new AliveEvent(ip, port));
-		return ok();
-	}
-
-	private Response ok() {
 		return Response.status(200).entity("OK").build();
 	}
+
+	@GET
+	@Path("/{event}/{ip}/{port}")
+	public Response logLifeCycleEvent(@PathParam("event") String event, @PathParam("ip") String ip,
+			@PathParam("port") String port) {
+
+		RepositoryManager repo = RepositoryManager.getInstance(new Conf());
+		
+		if("startup".equalsIgnoreCase(event)) {
+			repo.log(new StartUpEvent(ip, port));
+		} else if ("stop".equalsIgnoreCase(event)) {
+			repo.log(new ShutDownEvent(ip, port));
+		} else if ("alive".equalsIgnoreCase(event)) {
+			repo.log(new AliveEvent(ip, port));
+		}
+		return Response.status(200).entity("OK").build();
+	}
+
 }

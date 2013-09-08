@@ -42,7 +42,13 @@ public class RepositoryManager {
 	}
 
 	public static RepositoryManager getInstance(Conf conf) {
-		instance.setConf(conf);
+		if (instance.getConf() == null) {
+			synchronized (instance) {
+				if (instance.getConf() == null) {
+					instance.setConf(conf);
+				}
+			}
+		}
 		return instance;
 	}
 
@@ -81,13 +87,13 @@ public class RepositoryManager {
 	public boolean isUp(String ip, String port) {
 		List<ClientEvent> eventsByClient = getPrevayler().prevalentSystem()
 				.getEventsByClient(ip, port);
-		
-		if(eventsByClient.isEmpty()) {
+
+		if (eventsByClient.isEmpty()) {
 			return false;
 		}
-		
-		
-		ClientEvent lastClientEvent = eventsByClient.get(eventsByClient.size()-1);
+
+		ClientEvent lastClientEvent = eventsByClient
+				.get(eventsByClient.size() - 1);
 		return lastClientEvent instanceof StartUpEvent
 				|| lastClientEvent instanceof AliveEvent;
 	}

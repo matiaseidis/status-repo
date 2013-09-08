@@ -39,14 +39,14 @@ $(function() {
 						+ puller.ip
 						+ ":"
 						+ puller.port
-						+ $.progressLeyend("puller-" + puller.id,
+						+ $.progressLeyend("puller-" + puller.clientId,
 								puller.progress) + progress + '</div>');
 
 	};
 
 	refreshPuller = function(puller) {
 		p = puller.progress;
-		$("span#puller-" + puller.id).html($.progressText(puller.progress));
+		$("span#puller-" + puller.clientId).html($.progressText(puller.progress));
 		$('#pullerProgressBar .progress-bar').attr('aria-valuenow', p);
 		$('#pullerProgressBar .progress-bar').attr('style',
 				'width: ' + p + '%;');
@@ -70,24 +70,24 @@ $(function() {
 	refreshPusher = function(pusher) {
 		p = pusher.progress;
 		console.log(pusher.progress);
-		console.log($('.progress#pusher-' + pusher.id + ' .progress-bar'));
-		$("span.pusher-" + pusher.id).html($.progressText(pusher.progress));
-		$('.progress#pusher-' + pusher.id + ' .progress-bar').attr('aria-valuenow', p);
-		$('.progress#pusher-' + pusher.id + ' .progress-bar').attr('style', 'width: ' + p + '%;');
-		$('.progress#pusher-' + pusher.id + ' .progress-bar span.sr-only').html(p + '% Complete');
+		console.log($('.progress#pusher-' + pusher.clientId + ' .progress-bar'));
+		$("span.pusher-" + pusher.clientId).html($.progressText(pusher.progress));
+		$('.progress#pusher-' + pusher.clientId + ' .progress-bar').attr('aria-valuenow', p);
+		$('.progress#pusher-' + pusher.clientId + ' .progress-bar').attr('style', 'width: ' + p + '%;');
+		$('.progress#pusher-' + pusher.clientId + ' .progress-bar span.sr-only').html(p + '% Complete');
 
 	};
 
 	drawPusher = function(pusher) {
-		progress = $.progress(pusher.progress, "pusher-"+pusher.id);
+		progress = $.progress(pusher.progress, "pusher-"+pusher.clientId);
 		return $("#pushersBox").append(
 				'<div id="pusher-'
-						+ pusher.id
+						+ pusher.clientId
 						+ '" class="pusherBox">pusher '
 						+ pusher.ip
 						+ ":"
 						+ pusher.port
-						+ $.progressLeyend("pusher-" + pusher.id,
+						+ $.progressLeyend("pusher-" + pusher.clientId,
 								pusher.progress) + progress + '</div>');
 	};
 

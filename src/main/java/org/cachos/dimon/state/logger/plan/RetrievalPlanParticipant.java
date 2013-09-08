@@ -9,7 +9,7 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private int id;
+	private String clientId;
 	private String ip;
 	private String port;
 	private long byteCurrent;
@@ -22,15 +22,15 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 		this.port = port;
 	}
 	
-	public RetrievalPlanParticipant(String ip, String port, int id,
+	public RetrievalPlanParticipant(String ip, String port, String clientId,
 			long byteFrom, long byteTo, long byteCurrent) {
 		super();
-		this.ip = ip;
-		this.port = port;
-		this.id = id;
-		this.byteFrom = byteFrom;
-		this.byteTo = byteTo;
-		this.byteCurrent = byteCurrent;
+		this.setIp(ip);
+		this.setPort(port);
+		this.setClientId(clientId);
+		this.setByteFrom(byteFrom);
+		this.setByteTo(byteTo);
+		this.setByteCurrent(byteCurrent);
 	}
 	
 	public long getByteCurrent() {
@@ -61,16 +61,6 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 		this.port = port;
 	}
 
-
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
-	
 	public long getByteFrom() {
 		return byteFrom;
 	}
@@ -88,5 +78,13 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 
 	public void setByteTo(long byteTo) {
 		this.byteTo = byteTo;
+	}
+
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 }

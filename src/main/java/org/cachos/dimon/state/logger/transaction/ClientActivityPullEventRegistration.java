@@ -21,7 +21,7 @@ public class ClientActivityPullEventRegistration extends
 			PullEvent event) {
 		Puller puller = plan.getPuller();
 		if(puller == null) {
-			puller = new Puller(event.getIp(), event.getPort(), event.getId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent());
+			puller = new Puller(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent());
 			plan.setPuller(puller);
 		}
 		puller.setByteCurrent(event.getByteCurrent());

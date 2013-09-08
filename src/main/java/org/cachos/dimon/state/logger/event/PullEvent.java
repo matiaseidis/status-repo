@@ -12,9 +12,9 @@ public class PullEvent extends ClientActivityEvent {
 		// TODO Auto-generated constructor stub
 	}
 
-	public PullEvent(String ip, String port, String planId, int id,
+	public PullEvent(String ip, String port, String planId, String clientId,
 			long byteCurrent, long byteFrom, long byteTo) {
-		super(ip, port, planId, id, byteFrom, byteTo, byteCurrent);
+		super(ip, port, planId, clientId, byteFrom, byteTo, byteCurrent);
 		// TODO Auto-generated constructor stub
 	}
 

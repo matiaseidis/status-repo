@@ -20,9 +20,9 @@ public class ClientActivityPushEventRegistration extends
 	@Override
 	protected void updateParticipant(RetrievalPlan plan,
 			PushEvent event) {
-		Pusher pusher = plan.getPusher(event.getId());
+		Pusher pusher = plan.getPusher(event.getClientId());
 		if(pusher == null) {
-			pusher = new Pusher(event.getIp(), event.getPort(), event.getId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent());
+			pusher = new Pusher(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent());
 			plan.getPushers().add(pusher);
 		}
 		pusher.setByteCurrent(event.getByteCurrent());

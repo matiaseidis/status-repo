@@ -3,6 +3,8 @@ package org.cachos.dimon.state.logger.plan;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 public class RetrievalPlan {
 
 	private long id;
@@ -33,9 +35,9 @@ public class RetrievalPlan {
 		this.puller = puller;
 	}
 
-	public Pusher getPusher(int id) {
+	public Pusher getPusher(String clientId) {
 		for(Pusher pusher : this.getPushers()){
-			if(pusher.getId() == id) {
+			if(StringUtils.equals(pusher.getClientId(), clientId)) {
 				return pusher;
 			}
 		}

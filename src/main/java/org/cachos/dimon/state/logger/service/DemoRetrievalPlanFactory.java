@@ -28,7 +28,7 @@ public class DemoRetrievalPlanFactory {
 
 	private Puller puller() {
 		Puller p = new Puller("9.8.7.6", "0000");
-		p.setId(1);
+		p.setClientId("1");
 		p.setByteFrom(0);
 		p.setByteTo(99999);
 		
@@ -40,14 +40,14 @@ public class DemoRetrievalPlanFactory {
 		int pushers = 12;
 		List<Pusher> result = new ArrayList<Pusher>();
 		for (int i = 1; i <= pushers; i++) {
-			result.add(pusher(i));
+			result.add(pusher(""+i));
 		}
 		return result;
 	}
 
-	private Pusher pusher(int id) {
+	private Pusher pusher(String id) {
 		Pusher p = new Pusher("" + id + ".1.1.1", "9876");
-		p.setId(id);
+		p.setClientId(id);
 		p.setByteFrom(0);
 		p.setByteTo(5555);
 		

@@ -7,9 +7,9 @@ public class Puller extends RetrievalPlanParticipant {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Puller(String ip, String port, int id, long byteFrom, long byteTo,
+	public Puller(String ip, String port, String clientId, long byteFrom, long byteTo,
 			long byteCurrent) {
-		super(ip, port, id, byteFrom, byteTo, byteCurrent);
+		super(ip, port, clientId, byteFrom, byteTo, byteCurrent);
 		// TODO Auto-generated constructor stub
 	}
 	
