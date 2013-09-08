@@ -50,7 +50,7 @@ public class StateLoggerService {
 			@PathParam("byteFrom") long byteFrom,
 			@PathParam("byteTo") long byteTo) {
 
-		RepositoryManager repo = RepositoryManager.getInstance(new Conf());
+		RepositoryManager repo = initRepo();
 		
 		if ("push".equalsIgnoreCase(action)) {
 			repo.logPushEvent(new PushEvent(ip, port, planId, clientId, byteCurrent, byteFrom, byteTo));
@@ -61,12 +61,12 @@ public class StateLoggerService {
 	}
 
 	@GET
-	@Path("/{event}/{ip}/{port}")
+	@Path("/statusEvent/{event}/{ip}/{port}")
 	public Response logLifeCycleEvent(@PathParam("event") String event, @PathParam("ip") String ip,
 			@PathParam("port") String port) {
 
-		RepositoryManager repo = RepositoryManager.getInstance(new Conf());
-		
+		RepositoryManager repo = initRepo();
+
 		if("startup".equalsIgnoreCase(event)) {
 			repo.log(new StartUpEvent(ip, port));
 		} else if ("stop".equalsIgnoreCase(event)) {
@@ -75,6 +75,15 @@ public class StateLoggerService {
 			repo.log(new AliveEvent(ip, port));
 		}
 		return Response.status(200).entity("OK").build();
+	}
+
+	private RepositoryManager initRepo() {
+		try {
+			return RepositoryManager.getInstance(new Conf()).open();
+		} catch (Exception e) {
+			logger.fatal("unable to open() repo", e);
+		}
+		return null;
 	}
 
 }

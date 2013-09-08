@@ -13,6 +13,8 @@ public class Conf {
 
 	private String confPath = "/conf.properties";
 	private String baseDir = "prevalence.base";
+	private String servicesIp = "services.ip";
+	private String servicesPort = "services.port";
 	private Properties properties;
 	
 	public Conf() {
@@ -59,6 +61,14 @@ public class Conf {
 			throw new IllegalArgumentException("property not found: " + propertyKey);
 		}
 		return result;
+	}
+
+	public String getServicesIp() {
+		return get(this.servicesIp);
+	}
+
+	public String getServicesPort() {
+		return get(this.servicesPort);
 	}
 
 }
