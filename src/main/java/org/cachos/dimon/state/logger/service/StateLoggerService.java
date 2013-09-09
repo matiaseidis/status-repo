@@ -9,18 +9,17 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
-import org.cachos.dimon.state.logger.event.AliveEvent;
-import org.cachos.dimon.state.logger.event.PullEvent;
-import org.cachos.dimon.state.logger.event.PushEvent;
-import org.cachos.dimon.state.logger.event.ShutDownEvent;
-import org.cachos.dimon.state.logger.event.StartUpEvent;
+import org.cachos.dimon.state.logger.event.ClientActivityEvent;
+import org.cachos.dimon.state.logger.event.ClientStatusEvent;
+import org.cachos.dimon.state.logger.event.type.CachoDirection;
+import org.cachos.dimon.state.logger.event.type.ClientState;
+import org.cachos.dimon.state.logger.plan.ClientActivity;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
 
 @Path("/logger")
 public class StateLoggerService {
 
-	private static final String planParticipantUriSuffix = "/{ip}/{port}/{planId}/{pullerId}/{byteCurrent}/{byteFrom}/{byteTo}";
 	static Logger logger = Logger.getLogger(StateLoggerService.class.getName());
 
 	@GET
@@ -39,6 +38,14 @@ public class StateLoggerService {
 		return RepositoryManager.getInstance().getPrevayler().prevalentSystem()
 				.getPlansMap().get(id);
 	}
+	
+	@GET
+	@Path("/clientActivity/{ip}/{port}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ClientActivity getClientActivity(@PathParam("ip") String ip, @PathParam("port") String port) {
+		return new ClientActivity(RepositoryManager.getInstance().getPrevayler().prevalentSystem()
+				.getEventsByClient(ip, port));
+	}
 
 	@GET
 	@Path("/check/{ip}/{port}")
@@ -51,39 +58,35 @@ public class StateLoggerService {
 	}
 	
 	@GET
-	@Path("/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}")
+	@Path("planEvent/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
 	public Response logPlanParticipantEvent(@PathParam("action") String action,
 			@PathParam("ip") String ip, @PathParam("port") String port,
 			@PathParam("planId") String planId,
 			@PathParam("clientId") String clientId,
 			@PathParam("byteCurrent") long byteCurrent,
 			@PathParam("byteFrom") long byteFrom,
-			@PathParam("byteTo") long byteTo) {
+			@PathParam("byteTo") long byteTo,
+			@PathParam("bandWidth") long bandWidth) {
 
 		RepositoryManager repo = initRepo();
+		CachoDirection direction = CachoDirection.PUSH.name().equalsIgnoreCase(action) ? CachoDirection.PUSH : CachoDirection.PULL; 
+		repo.logClientActivityEvent(new ClientActivityEvent(direction, ip, port, planId, clientId, byteFrom, byteTo, byteCurrent, bandWidth));
 		
-		if ("push".equalsIgnoreCase(action)) {
-			repo.logPushEvent(new PushEvent(ip, port, planId, clientId, byteCurrent, byteFrom, byteTo));
-		} else {
-			repo.logPullEvent(new PullEvent(ip, port, planId, clientId, byteCurrent, byteFrom, byteTo));
-		}
 		return Response.status(200).entity("OK").build();
 	}
 
 	@GET
 	@Path("/statusEvent/{event}/{ip}/{port}")
-	public Response logLifeCycleEvent(@PathParam("event") String event, @PathParam("ip") String ip,
-			@PathParam("port") String port) {
+	public Response logLifeCycleEvent(
+			@PathParam("event") String event, 
+			@PathParam("ip") String ip,
+			@PathParam("port") String port,
+			@PathParam("clientId") String clientId,
+			@PathParam("bandWidth") long bandWidth) {
 
 		RepositoryManager repo = initRepo();
-
-		if("startup".equalsIgnoreCase(event)) {
-			repo.log(new StartUpEvent(ip, port));
-		} else if ("stop".equalsIgnoreCase(event)) {
-			repo.log(new ShutDownEvent(ip, port));
-		} else if ("alive".equalsIgnoreCase(event)) {
-			repo.log(new AliveEvent(ip, port));
-		}
+		ClientState clientState = ClientState.forEvent(event);
+		repo.logClientStatusEvent(new ClientStatusEvent(clientState, ip, port, clientId, bandWidth));
 		return Response.status(200).entity("OK").build();
 	}
 

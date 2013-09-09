@@ -2,24 +2,19 @@ import java.util.concurrent.CountDownLatch;
 
 import junit.framework.TestCase;
 
-import org.apache.http.client.fluent.Request;
 import org.cachos.dimon.state.logger.Conf;
-import org.cachos.dimon.state.logger.event.AliveEvent;
-import org.cachos.dimon.state.logger.event.ShutDownEvent;
-import org.cachos.dimon.state.logger.event.StartUpEvent;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
-//import org.eclipse.jetty.server.Server;
-//import org.eclipse.jetty.servlet.ServletContextHandler.Context;
-//import org.eclipse.jetty.servlet.ServletHolder;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
-//import org.mortbay.jetty.handler.ContextHandler.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+//import org.eclipse.jetty.server.Server;
+//import org.eclipse.jetty.servlet.ServletContextHandler.Context;
+//import org.eclipse.jetty.servlet.ServletHolder;
+//import org.mortbay.jetty.handler.ContextHandler.Context;
 
 /*
  * 

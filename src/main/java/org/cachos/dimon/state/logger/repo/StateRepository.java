@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.event.ClientEvent;
+import org.cachos.dimon.state.logger.event.ClientStatusEvent;
+import org.cachos.dimon.state.logger.event.type.ClientState;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 
 public class StateRepository implements Serializable {
@@ -29,24 +31,16 @@ public class StateRepository implements Serializable {
 		setEventsByClientMap(new HashMap<String, List<ClientEvent>>()); 
 	}
 	
-	public <T extends ClientEvent> List<ClientEvent> getEvents(T event) {
-		return getEvents(event.getClass());
-	}
-
-	private <T extends ClientEvent> List<ClientEvent> getEventsByClassSimpleName(Class<T> event) {
-		return getEventsMap().get(event.getSimpleName());
-	}
-	
-	public <T extends ClientEvent> List<ClientEvent> getEvents(Class<T> eventClass) {
-		List<ClientEvent> result = getEventsByClassSimpleName(eventClass);
+	public List<ClientEvent> getEvents(String eventKey) {
+		List<ClientEvent> result = this.getEventsByTypeMap().get(eventKey);
 		if(result == null) {
 			result = new ArrayList<ClientEvent>();
-			this.getEventsMap().put(eventClass.getSimpleName(), result);
+			this.getEventsByTypeMap().put(eventKey, result);
 		}
 		return result;
 	}
 	
-	public Map<String, List<ClientEvent>> getEventsMap() {
+	public Map<String, List<ClientEvent>> getEventsByTypeMap() {
 		return eventsByTypeMap;
 	}
 
@@ -74,6 +68,4 @@ public class StateRepository implements Serializable {
 	public void setEventsByClientMap(Map<String, List<ClientEvent>> eventsByClientMap) {
 		this.eventsByClientMap = eventsByClientMap;
 	}
-	
-	
 }

@@ -1,8 +1,9 @@
 package org.cachos.dimon.state.logger.event;
 
+import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.plan.ProgressPercentageCalculator;
 
-public abstract class ClientActivityEvent extends ClientEvent {
+public class ClientActivityEvent extends ClientEvent {
 	
 	/**
 	 * 
@@ -10,25 +11,22 @@ public abstract class ClientActivityEvent extends ClientEvent {
 	private static final long serialVersionUID = 1L;
 	
 	private String planId;
-	private String clientId;
+	
 	private long byteCurrent;
 	private long byteFrom;
 	private long byteTo;
+	private CachoDirection cachoDirection;
 	
-	public ClientActivityEvent(String ip, String port, String planId, String clientId,
-			long byteFrom, long byteTo, long byteCurrent) {
-		super(ip, port);
+	public ClientActivityEvent(CachoDirection cachoDirection, String ip, String port, String planId, String clientId,
+			long byteFrom, long byteTo, long byteCurrent, long bandWidth) {
+		super(ip, port, clientId, bandWidth);
 		this.setPlanId(planId);
-		this.setClientId(clientId);
 		this.setByteCurrent(byteCurrent);
 		this.setByteFrom(byteFrom);
 		this.setByteTo(byteTo);
+		this.setCachoDirection(cachoDirection);
 	}
 
-	public ClientActivityEvent(String ip, String port) {
-		super(ip, port);
-	}
-	
 	public String getPlanId() {
 		return planId;
 	}
@@ -65,12 +63,16 @@ public abstract class ClientActivityEvent extends ClientEvent {
 		this.byteTo = byteTo;
 	}
 
-	public String getClientId() {
-		return clientId;
+	public CachoDirection getCachoDirection() {
+		return cachoDirection;
 	}
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
+	public void setCachoDirection(CachoDirection cachoDirection) {
+		this.cachoDirection = cachoDirection;
 	}
 
+	@Override
+	public String getEventType() {
+		return this.getCachoDirection().name();
+	}
 }

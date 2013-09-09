@@ -1,7 +1,6 @@
 package org.cachos.dimon.state.logger.plan;
 
 import org.apache.log4j.Logger;
-import org.cachos.dimon.state.logger.event.ClientEvent;
 
 public class ProgressPercentageCalculator {
 	

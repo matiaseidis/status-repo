@@ -4,13 +4,11 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
-import org.cachos.dimon.state.logger.event.AliveEvent;
+import org.cachos.dimon.state.logger.event.ClientActivityEvent;
 import org.cachos.dimon.state.logger.event.ClientEvent;
-import org.cachos.dimon.state.logger.event.PullEvent;
-import org.cachos.dimon.state.logger.event.PushEvent;
-import org.cachos.dimon.state.logger.event.StartUpEvent;
-import org.cachos.dimon.state.logger.transaction.ClientActivityPullEventRegistration;
-import org.cachos.dimon.state.logger.transaction.ClientActivityPushEventRegistration;
+import org.cachos.dimon.state.logger.event.ClientStatusEvent;
+import org.cachos.dimon.state.logger.event.type.ClientState;
+import org.cachos.dimon.state.logger.transaction.ClientActivityEventRegistration;
 import org.cachos.dimon.state.logger.transaction.ClientEventRegistration;
 import org.prevayler.Prevayler;
 import org.prevayler.PrevaylerFactory;
@@ -52,20 +50,16 @@ public class RepositoryManager {
 		return instance;
 	}
 
-	public void logPullEvent(PullEvent event) {
+	public void logClientActivityEvent(ClientActivityEvent event) {
 		System.out.println("RepositoryManager.logPullEvent()");
-		this.getPrevayler().execute(
-				new ClientActivityPullEventRegistration(event));
+		
+			this.getPrevayler().execute(
+					new ClientActivityEventRegistration(event));
 	}
-
-	public void logPushEvent(PushEvent event) {
-		this.getPrevayler().execute(
-				new ClientActivityPushEventRegistration(event));
-	}
-
-	public void log(ClientEvent event) {
-		System.out.println("RepositoryManager.log()");
-		this.getPrevayler().execute(new ClientEventRegistration(event));
+	
+	public void logClientStatusEvent(ClientStatusEvent event) {
+			this.getPrevayler().execute(
+					new ClientEventRegistration<ClientStatusEvent>(event));
 	}
 
 	public Prevayler<StateRepository> getPrevayler() {
@@ -91,11 +85,16 @@ public class RepositoryManager {
 		if (eventsByClient.isEmpty()) {
 			return false;
 		}
-
-		ClientEvent lastClientEvent = eventsByClient
-				.get(eventsByClient.size() - 1);
-		return lastClientEvent instanceof StartUpEvent
-				|| lastClientEvent instanceof AliveEvent;
+		
+		for(int i = eventsByClient.size(); i >= 0; i--) {
+			ClientEvent e = eventsByClient.get(i-1);
+			if(e instanceof ClientStatusEvent) {
+				ClientState state = ((ClientStatusEvent)e).getClientState();
+				return ClientState.ALIVE.equals(state) || 
+						ClientState.UP.equals(state);
+			}
+		}
+		return false;
 	}
 
 	public boolean isDown(String ip, String port) {

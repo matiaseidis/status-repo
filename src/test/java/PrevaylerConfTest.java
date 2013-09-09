@@ -1,13 +1,10 @@
-import java.io.File;
-import java.io.IOException;
-
 import junit.framework.TestCase;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
 import org.cachos.dimon.state.logger.event.ClientEvent;
-import org.cachos.dimon.state.logger.event.StartUpEvent;
+import org.cachos.dimon.state.logger.event.ClientStatusEvent;
+import org.cachos.dimon.state.logger.event.type.ClientState;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
 import org.junit.Test;
 
@@ -30,17 +27,17 @@ public class PrevaylerConfTest extends RepoEmptyRequiredTest{
 			e.printStackTrace();
 			TestCase.fail();
 		}
-
-		ClientEvent event = new StartUpEvent("test-ip", "test-port");
+		long bandWidth = 1000;
+		ClientStatusEvent event = new ClientStatusEvent(ClientState.UP, "test-ip", "test-port", "test-client-id", bandWidth);
 		
-		int size = repo.getPrevayler().prevalentSystem().getEvents(event)
+		int size = repo.getPrevayler().prevalentSystem().getEvents(event.getEventType())
 				.size();
 
 		assertSame(0, size);
 		
-		repo.log(event);
+		repo.logClientStatusEvent(event);
 
-		size = repo.getPrevayler().prevalentSystem().getEvents(event)
+		size = repo.getPrevayler().prevalentSystem().getEvents(event.getEventType())
 				.size();
 		
 		assertSame(1, size);
