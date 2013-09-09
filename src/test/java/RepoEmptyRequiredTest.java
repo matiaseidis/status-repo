@@ -16,18 +16,18 @@ public abstract class RepoEmptyRequiredTest extends TestCase {
 
 	private String confTestPath = "/test-conf.properties";
 	public static Server server = null;
-	@BeforeClass
-	public void startJetty() throws Exception {
-		logger.debug("------------sfd----------------------------------------------------");
-		if(server != null){
-			return;
-		}
-		server = new Server(8080); // see notice 1
-
-		server.start();
-		int actualPort = 0;
-		logger.debug("server port: " + actualPort);
-	}
+//	@BeforeClass
+//	public void startJetty() throws Exception {
+//		logger.debug("------------sfd----------------------------------------------------");
+//		if(server != null){
+//			return;
+//		}
+//		server = new Server(8080); // see notice 1
+//
+//		server.start();
+//		int actualPort = 0;
+//		logger.debug("server port: " + actualPort);
+//	}
 
 	public void cleanUp(Conf testConf)  {
 		try {

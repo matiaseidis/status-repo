@@ -41,6 +41,16 @@ public class StateLoggerService {
 	}
 
 	@GET
+	@Path("/check/{ip}/{port}")
+	public Response checkCLientState(@PathParam("ip") String ip, @PathParam("port") String port) {
+		String status = "UNKNOWN";
+		
+		RepositoryManager repo = initRepo();
+		status = repo.isUp(ip, port) ? "UP" : "DOWN";
+		return Response.status(200).entity(status).build();
+	}
+	
+	@GET
 	@Path("/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}")
 	public Response logPlanParticipantEvent(@PathParam("action") String action,
 			@PathParam("ip") String ip, @PathParam("port") String port,
