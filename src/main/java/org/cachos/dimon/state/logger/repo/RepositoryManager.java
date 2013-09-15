@@ -25,8 +25,14 @@ public class RepositoryManager {
 	}
 
 	public RepositoryManager open() throws Exception {
-		prevayler = PrevaylerFactory.createPrevayler(new StateRepository(),
-				this.getConf().getPrevalenceBase());
+		if(prevayler == null) {
+			synchronized (instance) {
+				if(prevayler == null) {
+					prevayler = PrevaylerFactory.createPrevayler(new StateRepository(),
+							this.getConf().getPrevalenceBase());
+				}
+			}
+		}
 		return instance;
 	}
 

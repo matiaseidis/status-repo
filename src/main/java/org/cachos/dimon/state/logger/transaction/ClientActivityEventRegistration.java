@@ -2,13 +2,17 @@ package org.cachos.dimon.state.logger.transaction;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.event.ClientActivityEvent;
 import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
+import org.cachos.dimon.state.logger.repo.RepositoryManager;
 import org.cachos.dimon.state.logger.repo.StateRepository;
 
 public class ClientActivityEventRegistration<T extends ClientActivityEvent> extends ClientEventRegistration<T> {
+
+	static Logger logger = Logger.getLogger(ClientActivityEventRegistration.class.getName());
 
 	/**
 	 * 
@@ -26,6 +30,7 @@ public class ClientActivityEventRegistration<T extends ClientActivityEvent> exte
 		if(plan == null) {
 			plan = new RetrievalPlan();
 			repo.getPlansMap().put(this.getEvent().getPlanId(), plan);
+			logger.debug("new plan created in repo: "+this.getEvent().getPlanId());
 		}
 		this.updateParticipant(plan, this.getEvent());
 	}
