@@ -36,15 +36,16 @@ public class StateLoggerService {
 	@Path("/plan/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public RetrievalPlan getPlan(@PathParam("id") String id) {
-		return RepositoryManager.getInstance().getPrevayler().prevalentSystem()
+		RetrievalPlan result = initRepo().getPrevayler().prevalentSystem()
 				.getPlansMap().get(id);
+		return result == null ? new RetrievalPlan() : result;
 	}
 	
 	@GET
 	@Path("/clientActivity/{ip}/{port}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public ClientActivity getClientActivity(@PathParam("ip") String ip, @PathParam("port") String port) {
-		return new ClientActivity(RepositoryManager.getInstance().getPrevayler().prevalentSystem()
+		return new ClientActivity(initRepo().getPrevayler().prevalentSystem()
 				.getEventsByClient(ip, port));
 	}
 
@@ -57,7 +58,7 @@ public class StateLoggerService {
 		status = repo.isUp(ip, port) ? "UP" : "DOWN";
 		return Response.status(200).entity(status).build();
 	}
-	
+//	http://localhost:8081/service/logger/activityReport/PULL/localhost/10002/plan-id/localhost:10002/27294226/27262976/29360127/49682.03497615262
 	@GET
 	@Path("/activityReport/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
 	public Response logPlanParticipantEvent(@PathParam("action") String action,

@@ -153,7 +153,7 @@
 					<contextPath>/</contextPath>
 					<scanIntervalSeconds>0</scanIntervalSeconds>
 					<stopKey>foo</stopKey>
-					<stopPort>9999</stopPort>
+					<stopPort>9998</stopPort>
 					<connectors>
 						<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 							<port>8081</port>
