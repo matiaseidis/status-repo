@@ -68,7 +68,7 @@ public class StateLoggerService {
 			@PathParam("byteCurrent") long byteCurrent,
 			@PathParam("byteFrom") long byteFrom,
 			@PathParam("byteTo") long byteTo,
-			@PathParam("bandWidth") long bandWidth) {
+			@PathParam("bandWidth") double bandWidth) {
 
 		RepositoryManager repo = initRepo();
 		CachoDirection direction = CachoDirection.PUSH.name().equalsIgnoreCase(action) ? CachoDirection.PUSH : CachoDirection.PULL; 

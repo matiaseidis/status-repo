@@ -18,7 +18,7 @@ public class ClientActivityEvent extends ClientEvent {
 	private CachoDirection cachoDirection;
 	
 	public ClientActivityEvent(CachoDirection cachoDirection, String ip, String port, String planId, String clientId,
-			long byteCurrent, long byteFrom, long byteTo, long bandWidth) {
+			long byteCurrent, long byteFrom, long byteTo, double bandWidth) {
 		super(ip, port, clientId, bandWidth);
 		this.setPlanId(planId);
 		this.setByteCurrent(byteCurrent);

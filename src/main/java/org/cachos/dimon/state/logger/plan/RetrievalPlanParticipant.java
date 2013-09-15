@@ -15,7 +15,7 @@ public class RetrievalPlanParticipant implements Serializable {
 	private long byteCurrent;
 	private long byteFrom;
 	private long byteTo;
-	private long bandWidth;
+	private double bandWidth;
 	
 	public RetrievalPlanParticipant(String ip, String port) {
 		super();
@@ -24,7 +24,7 @@ public class RetrievalPlanParticipant implements Serializable {
 	}
 //	
 	public RetrievalPlanParticipant(String ip, String port, String clientId,
-			long byteFrom, long byteTo, long byteCurrent, long bandWidth) {
+			long byteFrom, long byteTo, long byteCurrent, double bandWidth) {
 		super();
 		this.setIp(ip);
 		this.setPort(port);
@@ -90,11 +90,11 @@ public class RetrievalPlanParticipant implements Serializable {
 		this.clientId = clientId;
 	}
 
-	public long getBandWidth() {
+	public double getBandWidth() {
 		return bandWidth;
 	}
 
-	public void setBandWidth(long bandWidth) {
+	public void setBandWidth(double bandWidth) {
 		this.bandWidth = bandWidth;
 	}
 }

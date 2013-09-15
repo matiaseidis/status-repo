@@ -19,9 +19,9 @@ public abstract class ClientEvent implements Serializable {
 	private String port;
 	private String clientId;
 	private String date;
-	private long bandWidth;
+	private double bandWidth;
 
-	public ClientEvent(String ip, String port, String clientId, long bandWidth) {
+	public ClientEvent(String ip, String port, String clientId, double bandWidth) {
 		super();
 		this.ip = ip;
 		this.port = port;
@@ -54,11 +54,11 @@ public abstract class ClientEvent implements Serializable {
 		this.date = date;
 	}
 	
-	public long getBandWidth() {
+	public double getBandWidth() {
 		return bandWidth;
 	}
 
-	public void setBandWidth(long bandWidth) {
+	public void setBandWidth(double bandWidth) {
 		this.bandWidth = bandWidth;
 	}
 
