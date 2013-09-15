@@ -1,13 +1,16 @@
 #outerBox {
 //	background-color:red;
+font-size:10px;
+width:300px;
 }
 #pullerBox {
 	float:left;
 	width:280px;
 }
 #pushersBox {
-	padding-left: 300px;
-	margin-left:15px;
+//	padding-left: 300px;
+//	margin-left:15px;
+width:300px;
 }
 .bold {
 	font-weight:bold;
@@ -21,7 +24,7 @@
 }
 .pusherBox{
 //	background-color:yellow;
-width:300px;
+width:130px;
 float:left;
 height:80px;
 }

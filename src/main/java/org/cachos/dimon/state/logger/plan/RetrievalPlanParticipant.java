@@ -2,7 +2,7 @@ package org.cachos.dimon.state.logger.plan;
 
 import java.io.Serializable;
 
-public abstract class RetrievalPlanParticipant implements Serializable {
+public class RetrievalPlanParticipant implements Serializable {
 	
 	/**
 	 * 
@@ -15,15 +15,16 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 	private long byteCurrent;
 	private long byteFrom;
 	private long byteTo;
+	private long bandWidth;
 	
 	public RetrievalPlanParticipant(String ip, String port) {
 		super();
 		this.ip = ip;
 		this.port = port;
 	}
-	
+//	
 	public RetrievalPlanParticipant(String ip, String port, String clientId,
-			long byteFrom, long byteTo, long byteCurrent) {
+			long byteFrom, long byteTo, long byteCurrent, long bandWidth) {
 		super();
 		this.setIp(ip);
 		this.setPort(port);
@@ -31,6 +32,7 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 		this.setByteFrom(byteFrom);
 		this.setByteTo(byteTo);
 		this.setByteCurrent(byteCurrent);
+		this.setBandWidth(bandWidth);
 	}
 	
 	public long getByteCurrent() {
@@ -86,5 +88,13 @@ public abstract class RetrievalPlanParticipant implements Serializable {
 
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
+	}
+
+	public long getBandWidth() {
+		return bandWidth;
+	}
+
+	public void setBandWidth(long bandWidth) {
+		this.bandWidth = bandWidth;
 	}
 }

@@ -1,6 +1,7 @@
 package org.cachos.dimon.state.logger.service;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -58,7 +59,7 @@ public class StateLoggerService {
 	}
 	
 	@GET
-	@Path("planEvent/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
+	@Path("/activityReport/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
 	public Response logPlanParticipantEvent(@PathParam("action") String action,
 			@PathParam("ip") String ip, @PathParam("port") String port,
 			@PathParam("planId") String planId,
@@ -76,7 +77,7 @@ public class StateLoggerService {
 	}
 
 	@GET
-	@Path("/statusEvent/{event}/{ip}/{port}")
+	@Path("/statusReport/{event}/{ip}/{port}/{clientId}/{bandWidth}")
 	public Response logLifeCycleEvent(
 			@PathParam("event") String event, 
 			@PathParam("ip") String ip,

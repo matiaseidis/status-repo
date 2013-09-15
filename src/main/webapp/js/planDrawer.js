@@ -5,7 +5,7 @@ $(function() {
 		$("#pushersBox").empty();
 		$.ajax({
 			dataType : "json",
-			url : "/service/logger/plan",
+			url : "http://localhost:8081/service/logger/plan",
 			// data: data,
 			success : function(data) {
 				drawPuller(data.puller);
@@ -17,7 +17,7 @@ $(function() {
 	refreshPlan = function() {
 		$.ajax({
 			dataType : "json",
-			url : "http://localhost:8080/service/logger/plan",
+			url : "http://localhost:8081/service/logger/plan",
 			// data: data,
 			success : function(data) {
 				refreshPuller(data.puller);
@@ -88,9 +88,14 @@ $(function() {
 						+ ":"
 						+ pusher.port
 						+ $.progressLeyend("pusher-" + pusher.clientId,
-								pusher.progress) + progress + '</div>');
+								pusher.progress) + ' - ' + $.bandWidth(pusher) + progress +  '</div>');
 	};
 
+	$.bandWidth = function(pusher) {
+		return '<span class="bandwidth">bw: ' + pusher.bandWidth + '</span>';
+	};
+	
+	
 	$.progressLeyend = function(id, progress) {
 		return '<span class="'+id+' bold">' + $.progressText(progress)
 				+ '</span>';

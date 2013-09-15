@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.cachos.dimon.state.logger.plan.Puller;
-import org.cachos.dimon.state.logger.plan.Pusher;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
 
@@ -26,8 +24,8 @@ public class DemoRetrievalPlanFactory {
 		return plan;
 	}
 
-	private Puller puller() {
-		Puller p = new Puller("9.8.7.6", "0000");
+	private RetrievalPlanParticipant puller() {
+		RetrievalPlanParticipant p = new RetrievalPlanParticipant("9.8.7.6", "0000");
 		p.setClientId("1");
 		p.setByteFrom(0);
 		p.setByteTo(99999);
@@ -36,20 +34,22 @@ public class DemoRetrievalPlanFactory {
 		return p;
 	}
 	
-	private List<Pusher> pushers() {
+	private List<RetrievalPlanParticipant> pushers() {
 		int pushers = 12;
-		List<Pusher> result = new ArrayList<Pusher>();
+		List<RetrievalPlanParticipant> result = new ArrayList<RetrievalPlanParticipant>();
 		for (int i = 1; i <= pushers; i++) {
 			result.add(pusher(""+i));
 		}
 		return result;
 	}
 
-	private Pusher pusher(String id) {
-		Pusher p = new Pusher("" + id + ".1.1.1", "9876");
+	private RetrievalPlanParticipant pusher(String id) {
+		
+		RetrievalPlanParticipant p = new RetrievalPlanParticipant("" + id + ".1.1.1", "9876");
 		p.setClientId(id);
 		p.setByteFrom(0);
 		p.setByteTo(5555);
+		p.setBandWidth(15);
 		
 		pushersProgress = updateParticipantProgress(p, pushersProgress, pusherStep);
 		logger.debug("Pusher progress pre reset: ["+p.getProgress()+"]");

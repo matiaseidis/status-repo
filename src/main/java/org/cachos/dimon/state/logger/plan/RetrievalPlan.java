@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 public class RetrievalPlan {
 
 	private long id;
-	private List<Pusher> pushers = new ArrayList<Pusher>();
-	private Puller puller;
+	private List<RetrievalPlanParticipant> pushers = new ArrayList<RetrievalPlanParticipant>();
+	private RetrievalPlanParticipant puller;
 
 	public long getId() {
 		return id;
@@ -19,24 +19,24 @@ public class RetrievalPlan {
 		this.id = id;
 	}
 	
-	public List<Pusher> getPushers() {
+	public List<RetrievalPlanParticipant> getPushers() {
 		return pushers;
 	}
 
-	public void setPushers(List<Pusher> pushers) {
+	public void setPushers(List<RetrievalPlanParticipant> pushers) {
 		this.pushers = pushers;
 	}
 
-	public Puller getPuller() {
+	public RetrievalPlanParticipant getPuller() {
 		return puller;
 	}
 
-	public void setPuller(Puller puller) {
+	public void setPuller(RetrievalPlanParticipant puller) {
 		this.puller = puller;
 	}
 
-	public Pusher getPusher(String clientId) {
-		for(Pusher pusher : this.getPushers()){
+	public RetrievalPlanParticipant getPusher(String clientId) {
+		for(RetrievalPlanParticipant pusher : this.getPushers()){
 			if(StringUtils.equals(pusher.getClientId(), clientId)) {
 				return pusher;
 			}
