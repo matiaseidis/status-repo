@@ -22,13 +22,15 @@ public class StateRepository implements Serializable {
 	static Logger logger = Logger.getLogger(StateRepository.class.getName());
 
 	private Map<String, RetrievalPlan> plansMap = null;
+	
 	private Map<String, List<ClientEvent>> eventsByTypeMap = null;
+
 	private Map<String, List<ClientEvent>> eventsByClientMap = null;
 
 	public StateRepository() {
-		plansMap = new HashMap<String, RetrievalPlan>();
-		eventsByTypeMap = new HashMap<String, List<ClientEvent>>();
-		setEventsByClientMap(new HashMap<String, List<ClientEvent>>()); 
+		this.setPlansMap(new HashMap<String, RetrievalPlan>());
+		this.setEventsByTypeMap(new HashMap<String, List<ClientEvent>>());
+		this.setEventsByClientMap(new HashMap<String, List<ClientEvent>>()); 
 	}
 	
 	public List<ClientEvent> getEvents(String eventKey) {
@@ -43,9 +45,17 @@ public class StateRepository implements Serializable {
 	public Map<String, List<ClientEvent>> getEventsByTypeMap() {
 		return eventsByTypeMap;
 	}
+	
+	public void setEventsByTypeMap(Map<String, List<ClientEvent>> eventsByTypeMap) {
+		this.eventsByTypeMap = eventsByTypeMap;
+	}
 
 	public Map<String, RetrievalPlan> getPlansMap() {
 		return plansMap;
+	}
+	
+	public void setPlansMap(Map<String, RetrievalPlan> plansMap) {
+		this.plansMap = plansMap;
 	}
 
 	public List<ClientEvent> getEventsByClient(String ip, String port) {

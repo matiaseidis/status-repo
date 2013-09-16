@@ -18,6 +18,8 @@ import org.cachos.dimon.state.logger.repo.RepositoryManager;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.common.collect.Collections2;
+
 public class EventNotificationTest extends RepoEmptyRequiredTest {
 
 	static Logger logger = Logger.getLogger(EventNotificationTest.class
@@ -45,7 +47,7 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 
 		cleanUp(testConf);
 
-		String ip = "2.2.2.2";
+		String ip = "26.2.2.2";
 		String port = "9999";
 		long bandWidth = 122;
 		ClientStatusEvent startUp = new ClientStatusEvent(ClientState.UP, ip,
@@ -65,11 +67,25 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 		Assert.assertTrue(repo.isDown(ip, port));
 
 		repo.logClientStatusEvent(startUp);
+		
+		Assert.assertSame(repo.getPrevayler().prevalentSystem()
+				.getEvents(ClientState.UP.name()).toString(),
+				1,
+				repo.getPrevayler().prevalentSystem()
+						.getEvents(ClientState.UP.name()).size());
 
 		Assert.assertTrue(repo.isUp(ip, port));
 		Assert.assertFalse(repo.isDown(ip, port));
 
 		repo.logClientStatusEvent(alive1);
+		
+		Assert.assertSame(repo.getPrevayler().prevalentSystem()
+				.getEvents(ClientState.UP.name()).toString(),
+				1,
+				repo.getPrevayler().prevalentSystem()
+						.getEvents(ClientState.UP.name()).size());
+		
+		
 		repo.logClientStatusEvent(alive2);
 		repo.logClientStatusEvent(alive3);
 
@@ -81,7 +97,8 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 		Assert.assertFalse(repo.isUp(ip, port));
 		Assert.assertTrue(repo.isDown(ip, port));
 
-		Assert.assertSame(
+		Assert.assertSame(repo.getPrevayler().prevalentSystem()
+				.getEvents(ClientState.UP.name()).toString(),
 				1,
 				repo.getPrevayler().prevalentSystem()
 						.getEvents(ClientState.UP.name()).size());
@@ -121,17 +138,21 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 
 		String planId = "test-retrieval-plan";
 		long byteCurrent = 0;
-		long byteFrom = 0;
-		long byteTo = 99999;
+		long byteFrom1 = 0;
+		long byteFrom2 = 10;
+		long byteFrom3 = 20;
+		long byteTo1 = 9;
+		long byteTo2 = 19;
+		long byteTo3 = 29;
 		ClientActivityEvent firstPullEvent = new ClientActivityEvent(
-				CachoDirection.PULL, ip, port, planId, clientId, byteFrom,
-				byteTo, byteCurrent, bandWidth);
+				CachoDirection.PULL, ip, port, planId, clientId, byteFrom1,
+				byteTo1, byteCurrent, bandWidth);
 
 		repo.logClientActivityEvent(firstPullEvent);
 		byteCurrent = 1;
 		ClientActivityEvent updatePullEvent = new ClientActivityEvent(
-				CachoDirection.PULL, ip, port, planId, clientId, byteFrom,
-				byteTo, byteCurrent, bandWidth);
+				CachoDirection.PULL, ip, port, planId, clientId, byteFrom1,
+				byteTo1, byteCurrent, bandWidth);
 		repo.logClientActivityEvent(updatePullEvent);
 
 		RetrievalPlan planFromRepo = repo.getPrevayler().prevalentSystem()
@@ -147,14 +168,14 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 		Assert.assertTrue(((ClientActivityEvent) eventsByClient.get(2))
 				.getCachoDirection().equals(CachoDirection.PULL));
 		ClientActivityEvent firstPusherEvent = new ClientActivityEvent(
-				CachoDirection.PUSH, "3.3.3.3", "333", planId, "2", byteFrom,
-				byteTo, byteCurrent, bandWidth);
+				CachoDirection.PUSH, "3.3.3.3", "333", planId, "2", byteFrom1,
+				byteTo1, byteCurrent, bandWidth);
 		ClientActivityEvent secondPusherEvent = new ClientActivityEvent(
-				CachoDirection.PUSH, "4.3.3.3", "333", planId, "3", byteFrom,
-				byteTo, byteCurrent, bandWidth);
+				CachoDirection.PUSH, "4.3.3.3", "333", planId, "3", byteFrom2,
+				byteTo2, byteCurrent, bandWidth);
 		ClientActivityEvent thirdPusherEvent = new ClientActivityEvent(
-				CachoDirection.PUSH, "5.3.3.3", "333", planId, "4", byteFrom,
-				byteTo, byteCurrent, bandWidth);
+				CachoDirection.PUSH, "5.3.3.3", "333", planId, "4", byteFrom3,
+				byteTo3, byteCurrent, bandWidth);
 
 		repo.logClientActivityEvent(firstPusherEvent);
 		repo.logClientActivityEvent(secondPusherEvent);
@@ -163,13 +184,13 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 		planFromRepo = repo.getPrevayler().prevalentSystem().getPlansMap()
 				.get(planId);
 
-		Assert.assertSame(3, planFromRepo.getPushers().size());
+		Assert.assertSame(3, planFromRepo.getPulls().size());
 		int newCurrentByte = 150;
 		ClientActivityEvent thirdPusherUpdateEvent = new ClientActivityEvent(
-				CachoDirection.PUSH, "5.3.3.3", "333", planId, "4", byteFrom,
-				byteTo, newCurrentByte, bandWidth);
+				CachoDirection.PUSH, "5.3.3.3", "333", planId, "4", byteFrom3,
+				byteTo3, newCurrentByte, bandWidth);
 
-		Assert.assertSame(3, planFromRepo.getPushers().size());
+		Assert.assertSame(3, planFromRepo.getPulls().size());
 		Assert.assertNotSame(newCurrentByte,
 				planFromRepo.getPusher(thirdPusherEvent.getClientId())
 						.getByteCurrent());

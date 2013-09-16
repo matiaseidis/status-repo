@@ -19,31 +19,31 @@ public class DemoRetrievalPlanFactory {
 	public RetrievalPlan createDemoRetrievalPlan() {
 		RetrievalPlan plan = new RetrievalPlan();
 		plan.setId(1L);
-		plan.setPushers(pushers());
-		plan.setPuller(puller());
+		plan.setPulls(pullers());
+//		plan.setPuller(puller());
 		return plan;
 	}
 
-	private RetrievalPlanParticipant puller() {
-		RetrievalPlanParticipant p = new RetrievalPlanParticipant("9.8.7.6", "0000");
-		p.setClientId("1");
-		p.setByteFrom(0);
-		p.setByteTo(99999);
-		
-		pullerProgress = updateParticipantProgress(p, pullerProgress, pullerStep);
-		return p;
-	}
+//	private RetrievalPlanParticipant puller() {
+//		RetrievalPlanParticipant p = new RetrievalPlanParticipant("9.8.7.6", "0000");
+//		p.setClientId("1");
+//		p.setByteFrom(0);
+//		p.setByteTo(99999);
+//		
+//		pullerProgress = updateParticipantProgress(p, pullerProgress, pullerStep);
+//		return p;
+//	}
 	
-	private List<RetrievalPlanParticipant> pushers() {
-		int pushers = 12;
+	private List<RetrievalPlanParticipant> pullers() {
+		int pullers = 12;
 		List<RetrievalPlanParticipant> result = new ArrayList<RetrievalPlanParticipant>();
-		for (int i = 1; i <= pushers; i++) {
-			result.add(pusher(""+i));
+		for (int i = 1; i <= pullers; i++) {
+			result.add(puller(""+i));
 		}
 		return result;
 	}
 
-	private RetrievalPlanParticipant pusher(String id) {
+	private RetrievalPlanParticipant puller(String id) {
 		
 		RetrievalPlanParticipant p = new RetrievalPlanParticipant("" + id + ".1.1.1", "9876");
 		p.setClientId(id);

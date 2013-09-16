@@ -1,5 +1,6 @@
 package org.cachos.dimon.state.logger.event;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.cachos.dimon.state.logger.event.type.ClientState;
 
 public class ClientStatusEvent extends ClientEvent {
@@ -27,6 +28,11 @@ public class ClientStatusEvent extends ClientEvent {
 	@Override
 	public String getEventType() {
 		return this.getClientState().name();
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

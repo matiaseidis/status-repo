@@ -2,6 +2,8 @@ package org.cachos.dimon.state.logger.plan;
 
 import java.io.Serializable;
 
+import org.cachos.dimon.state.logger.event.ClientActivityEvent;
+
 public class RetrievalPlanParticipant implements Serializable {
 	
 	/**
@@ -21,6 +23,17 @@ public class RetrievalPlanParticipant implements Serializable {
 		super();
 		this.ip = ip;
 		this.port = port;
+	}
+	
+	public RetrievalPlanParticipant(ClientActivityEvent event) {
+		this(event.getIp(), 
+		event.getPort(), 
+		event.getClientId(), 
+		event.getByteFrom(), 
+		event.getByteTo(), 
+		event.getByteCurrent(), 
+		event.getBandWidth());
+		
 	}
 //	
 	public RetrievalPlanParticipant(String ip, String port, String clientId,

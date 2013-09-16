@@ -7,7 +7,6 @@ import org.cachos.dimon.state.logger.event.ClientActivityEvent;
 import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
-import org.cachos.dimon.state.logger.repo.RepositoryManager;
 import org.cachos.dimon.state.logger.repo.StateRepository;
 
 public class ClientActivityEventRegistration<T extends ClientActivityEvent> extends ClientEventRegistration<T> {
@@ -36,28 +35,48 @@ public class ClientActivityEventRegistration<T extends ClientActivityEvent> exte
 	}
 
 	private void updateParticipant(RetrievalPlan plan, T event){
-		if(CachoDirection.PULL.equals(this.getEvent().getCachoDirection())) {
+//		if(CachoDirection.PULL.equals(this.getEvent().getCachoDirection())) {
 			updatePuller(plan, event);
-		} else {
-			updatePusher(plan, event);
-		}
+//		} else {
+//			updatePusher(plan, event);
+//		}
 	}
 
-	private void updatePusher(RetrievalPlan plan, T event) {
-		RetrievalPlanParticipant pusher = plan.getPusher(event.getClientId());
-		if(pusher == null) {
-			pusher = new RetrievalPlanParticipant(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent(), event.getBandWidth());
-			plan.getPushers().add(pusher);
-		}
-		pusher.setByteCurrent(event.getByteCurrent());
-	}
+//	private void updatePusher(RetrievalPlan plan, T event) {
+//		RetrievalPlanParticipant pusher = plan.getPusher(event.getClientId());
+//		if(pusher == null) {
+//			pusher = new RetrievalPlanParticipant(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent(), event.getBandWidth());
+//			plan.getPushers().add(pusher);
+//		}
+//		pusher.setByteCurrent(event.getByteCurrent());
+//	}
 
 	private void updatePuller(RetrievalPlan plan, T event) {
-		RetrievalPlanParticipant puller = plan.getPuller();
-		if(puller == null) {
-			puller = new RetrievalPlanParticipant(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent(), event.getBandWidth());
-			plan.setPuller(puller);
+		
+		// identifico de que puller se trata por el byteFrom del cacho
+		RetrievalPlanParticipant pull = null;
+		for(RetrievalPlanParticipant p : plan.getPulls()) {
+			if(p.getByteFrom() == event.getByteFrom()) {
+				pull = p;
+			}
 		}
-		puller.setByteCurrent(event.getByteCurrent());
+		if(pull == null) {
+			// cacho reportado por primera vez para este plan
+			pull = new RetrievalPlanParticipant(event);
+			plan.getPulls().add(pull);
+		} else {
+			pull.setByteCurrent(event.getByteCurrent());
+			pull.setBandWidth(event.getBandWidth());
+		}
+		
+		
+		
+//		
+//		RetrievalPlanParticipant puller = plan.getPuller();
+//		if(puller == null) {
+//			puller = new RetrievalPlanParticipant(event.getIp(), event.getPort(), event.getClientId(), event.getByteFrom(), event.getByteTo(), event.getByteCurrent(), event.getBandWidth());
+//			plan.setPuller(puller);
+//		}
+//		puller.setByteCurrent(event.getByteCurrent());
 	}
 }
