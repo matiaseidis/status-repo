@@ -106,4 +106,9 @@ public class RepositoryManager {
 	public boolean isDown(String ip, String port) {
 		return !isUp(ip, port);
 	}
+
+	public void reset() {
+		prevayler = null;
+		conf = null;
+	}
 }

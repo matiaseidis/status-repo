@@ -32,7 +32,7 @@ public class ClientStatusEvent extends ClientEvent {
 	
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		return this.getIp()+":"+this.getPort()+" - "+this.getEventType();
 	}
 
 }

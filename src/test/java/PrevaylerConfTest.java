@@ -33,7 +33,7 @@ public class PrevaylerConfTest extends RepoEmptyRequiredTest{
 		int size = repo.getPrevayler().prevalentSystem().getEvents(event.getEventType())
 				.size();
 
-		assertSame(0, size);
+		assertSame(repo.getPrevayler().prevalentSystem().getEvents(event.getEventType()).toString(), 0, size);
 		
 		repo.logClientStatusEvent(event);
 

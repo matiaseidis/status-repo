@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.Conf;
+import org.cachos.dimon.state.logger.repo.RepositoryManager;
 import org.eclipse.jetty.server.Server;
 import org.junit.BeforeClass;
 
@@ -39,12 +40,7 @@ public abstract class RepoEmptyRequiredTest extends TestCase {
 							+ testConf.getPrevalenceBase(), e);
 			TestCase.fail();
 		}
-		try {
-//			startJetty();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		RepositoryManager.getInstance().reset();
 	}
 
 	public String getConfTestPath() {

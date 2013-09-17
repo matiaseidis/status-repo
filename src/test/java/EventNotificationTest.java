@@ -35,6 +35,7 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 							+ testConf.getPrevalenceBase(), e);
 			TestCase.fail();
 		}
+		RepositoryManager.getInstance().reset();
 	}
 
 	/**
@@ -73,6 +74,12 @@ public class EventNotificationTest extends RepoEmptyRequiredTest {
 				1,
 				repo.getPrevayler().prevalentSystem()
 						.getEvents(ClientState.UP.name()).size());
+		
+		Assert.assertSame(repo.getPrevayler().prevalentSystem()
+				.getEventsByClient(ip, port).toString(),
+				1,
+				repo.getPrevayler().prevalentSystem()
+				.getEventsByClient(ip, port).size());
 
 		Assert.assertTrue(repo.isUp(ip, port));
 		Assert.assertFalse(repo.isDown(ip, port));
