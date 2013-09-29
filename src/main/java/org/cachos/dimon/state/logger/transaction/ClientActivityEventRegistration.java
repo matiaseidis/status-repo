@@ -27,6 +27,7 @@ public class ClientActivityEventRegistration<T extends ClientActivityEvent> exte
 		super.executeOn(repo, date);
 		RetrievalPlan plan = repo.getPlansMap().get(this.getEvent().getPlanId());
 		if(plan == null) {
+			logger.info("the plan is null");
 			plan = new RetrievalPlan();
 			repo.getPlansMap().put(this.getEvent().getPlanId(), plan);
 			logger.debug("new plan created in repo: "+this.getEvent().getPlanId());
@@ -58,13 +59,15 @@ public class ClientActivityEventRegistration<T extends ClientActivityEvent> exte
 		for(RetrievalPlanParticipant p : plan.getPulls()) {
 			if(p.getByteFrom() == event.getByteFrom()) {
 				pull = p;
+				break;
 			}
 		}
 		if(pull == null) {
-			// cacho reportado por primera vez para este plan
+			logger.debug("cacho reportado por primera vez para este plan");
 			pull = new RetrievalPlanParticipant(event);
 			plan.getPulls().add(pull);
 		} else {
+			logger.debug("actualizamos el cacho para este plan");
 			pull.setByteCurrent(event.getByteCurrent());
 			pull.setBandWidth(event.getBandWidth());
 		}

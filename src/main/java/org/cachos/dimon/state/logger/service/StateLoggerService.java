@@ -1,7 +1,9 @@
 package org.cachos.dimon.state.logger.service;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 import javax.ws.rs.GET;
-import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -9,13 +11,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.cachos.dimon.state.logger.Conf;
 import org.cachos.dimon.state.logger.event.ClientActivityEvent;
 import org.cachos.dimon.state.logger.event.ClientStatusEvent;
 import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.event.type.ClientState;
 import org.cachos.dimon.state.logger.plan.ClientActivity;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
+import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
 
 @Path("/logger")
@@ -36,8 +38,34 @@ public class StateLoggerService {
 	@Path("/plan/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public RetrievalPlan getPlan(@PathParam("id") String id) {
+		
+		
+		
 		RetrievalPlan result = initRepo().getPrevayler().prevalentSystem()
 				.getPlansMap().get(id);
+		if(result != null){
+		
+		Collections.sort(result.getPulls(), new Comparator<RetrievalPlanParticipant>(){
+
+			public int compare(RetrievalPlanParticipant o1,
+					RetrievalPlanParticipant o2) {
+				
+				return o1.getByteFrom() > o2.getByteFrom() ? 1 : o1.getByteFrom() == o2.getByteFrom() ? 0 : -1;
+			}
+			
+		});
+		
+		
+		Collections.sort(result.getPulls(), new Comparator<RetrievalPlanParticipant>(){
+
+			public int compare(RetrievalPlanParticipant o1,
+					RetrievalPlanParticipant o2) {
+				
+				return o1.getProgress() > o2.getProgress() ? -1 : o1.getProgress() == o2.getProgress() ? 0 : 1;
+			}
+			
+		});
+	}
 		return result == null ? new RetrievalPlan() : result;
 	}
 	
@@ -72,7 +100,7 @@ public class StateLoggerService {
 
 		RepositoryManager repo = initRepo();
 		CachoDirection direction = CachoDirection.PUSH.name().equalsIgnoreCase(action) ? CachoDirection.PUSH : CachoDirection.PULL; 
-		repo.logClientActivityEvent(new ClientActivityEvent(direction, ip, port, planId, clientId, byteFrom, byteTo, byteCurrent, bandWidth));
+		repo.logClientActivityEvent(new ClientActivityEvent(direction, ip, port, planId, clientId, byteCurrent, byteFrom, byteTo, bandWidth));
 		
 		return Response.status(200).entity("OK").build();
 	}
@@ -94,7 +122,7 @@ public class StateLoggerService {
 
 	private RepositoryManager initRepo() {
 		try {
-			return RepositoryManager.getInstance(new Conf()).open();
+			return RepositoryManager.getInstance().open();
 		} catch (Exception e) {
 			logger.fatal("unable to open() repo", e);
 		}

@@ -42,6 +42,13 @@ public class RepositoryManager {
 	}
 
 	public static RepositoryManager getInstance() {
+		if (instance.getConf() == null) {
+			synchronized (instance) {
+				if (instance.getConf() == null) {
+					instance.setConf(new Conf());
+				}
+			}
+		}
 		return instance;
 	}
 
