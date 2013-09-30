@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,6 +20,8 @@ import org.cachos.dimon.state.logger.plan.ClientActivity;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @Path("/logger")
 public class StateLoggerService {
@@ -87,21 +90,51 @@ public class StateLoggerService {
 		return Response.status(200).entity(status).build();
 	}
 //	http://localhost:8081/service/logger/activityReport/PULL/localhost/10002/plan-id/localhost:10002/27294226/27262976/29360127/49682.03497615262
-	@GET
-	@Path("/activityReport/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
-	public Response logPlanParticipantEvent(@PathParam("action") String action,
-			@PathParam("ip") String ip, @PathParam("port") String port,
-			@PathParam("planId") String planId,
-			@PathParam("clientId") String clientId,
-			@PathParam("byteCurrent") long byteCurrent,
-			@PathParam("byteFrom") long byteFrom,
-			@PathParam("byteTo") long byteTo,
-			@PathParam("bandWidth") double bandWidth) {
+//	@GET
+//	@Path("/activityReport/{action}/{ip}/{port}/{planId}/{clientId}/{byteCurrent}/{byteFrom}/{byteTo}/{bandWidth}")
+//	public Response logPlanParticipantEvent(@PathParam("action") String action,
+//			@PathParam("ip") String ip, @PathParam("port") String port,
+//			@PathParam("planId") String planId,
+//			@PathParam("clientId") String clientId,
+//			@PathParam("byteCurrent") long byteCurrent,
+//			@PathParam("byteFrom") long byteFrom,
+//			@PathParam("byteTo") long byteTo,
+//			@PathParam("bandWidth") double bandWidth) {
+//
+//		RepositoryManager repo = initRepo();
+//		CachoDirection direction = CachoDirection.PUSH.name().equalsIgnoreCase(action) ? CachoDirection.PUSH : CachoDirection.PULL; 
+//		repo.logClientActivityEvent(new ClientActivityEvent(direction, ip, port, planId, clientId, byteCurrent, byteFrom, byteTo, bandWidth));
+//		
+//		return Response.status(200).entity("OK").build();
+//	}
+	
+	@POST
+	@Path("/activityReport")
+	public Response logPlanParticipantEvent(JSONObject activity) {
+		
+//		logger.info(activity.toString());
 
 		RepositoryManager repo = initRepo();
-		CachoDirection direction = CachoDirection.PUSH.name().equalsIgnoreCase(action) ? CachoDirection.PUSH : CachoDirection.PULL; 
-		repo.logClientActivityEvent(new ClientActivityEvent(direction, ip, port, planId, clientId, byteCurrent, byteFrom, byteTo, bandWidth));
+		int messageLenght;
+		try {
+			messageLenght = activity.getJSONArray("cachos").length();
 		
+		for(int i = 0; i < messageLenght; i++){
+			JSONObject cacho = activity.getJSONArray("cachos").getJSONObject(i);
+			repo.logClientActivityEvent(new ClientActivityEvent(
+					CachoDirection.forEvent(cacho.getString("action")), 
+					cacho.getString("ip"), 
+					cacho.getString("port"), 
+					cacho.getString("planId"), 
+					cacho.getString("clientId"), 
+					cacho.getLong("byteCurrent"), 
+					cacho.getLong("byteFrom"), 
+					cacho.getLong("byteTo"), 
+					cacho.getDouble("bandWidth")));
+		}
+		} catch (JSONException e) {
+			logger.error(e);
+		}
 		return Response.status(200).entity("OK").build();
 	}
 
