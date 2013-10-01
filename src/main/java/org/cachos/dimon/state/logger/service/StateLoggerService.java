@@ -59,15 +59,15 @@ public class StateLoggerService {
 		});
 		
 		
-		Collections.sort(result.getPulls(), new Comparator<RetrievalPlanParticipant>(){
-
-			public int compare(RetrievalPlanParticipant o1,
-					RetrievalPlanParticipant o2) {
-				
-				return o1.getProgress() > o2.getProgress() ? -1 : o1.getProgress() == o2.getProgress() ? 0 : 1;
-			}
-			
-		});
+//		Collections.sort(result.getPulls(), new Comparator<RetrievalPlanParticipant>(){
+//
+//			public int compare(RetrievalPlanParticipant o1,
+//					RetrievalPlanParticipant o2) {
+//				
+//				return o1.getProgress() > o2.getProgress() ? -1 : o1.getProgress() == o2.getProgress() ? 0 : 1;
+//			}
+//			
+//		});
 	}
 		return result == null ? new RetrievalPlan() : result;
 	}
@@ -112,7 +112,7 @@ public class StateLoggerService {
 	@Path("/activityReport")
 	public Response logPlanParticipantEvent(JSONObject activity) {
 		
-//		logger.info(activity.toString());
+		logger.info(activity.toString());
 
 		RepositoryManager repo = initRepo();
 		int messageLenght;
@@ -123,7 +123,8 @@ public class StateLoggerService {
 			JSONObject cacho = activity.getJSONArray("cachos").getJSONObject(i);
 			repo.logClientActivityEvent(new ClientActivityEvent(
 					CachoDirection.forEvent(cacho.getString("action")), 
-					cacho.getString("ip"), 
+//					cacho.getString("ip")
+					"lalala", 
 					cacho.getString("port"), 
 					cacho.getString("planId"), 
 					cacho.getString("clientId"), 
