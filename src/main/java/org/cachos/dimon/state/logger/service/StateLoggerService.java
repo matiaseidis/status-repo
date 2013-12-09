@@ -1,7 +1,11 @@
 package org.cachos.dimon.state.logger.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -13,10 +17,12 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.event.ClientActivityEvent;
+import org.cachos.dimon.state.logger.event.ClientEvent;
 import org.cachos.dimon.state.logger.event.ClientStatusEvent;
 import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.event.type.ClientState;
 import org.cachos.dimon.state.logger.plan.ClientActivity;
+import org.cachos.dimon.state.logger.plan.NetworkState;
 import org.cachos.dimon.state.logger.plan.RetrievalPlan;
 import org.cachos.dimon.state.logger.plan.RetrievalPlanParticipant;
 import org.cachos.dimon.state.logger.repo.RepositoryManager;
@@ -27,6 +33,54 @@ import org.codehaus.jettison.json.JSONObject;
 public class StateLoggerService {
 
 	static Logger logger = Logger.getLogger(StateLoggerService.class.getName());
+	
+	/**
+	 * 
+	 * @return por cada nodo del cluster, 
+	 * si esta recibiendo o enviando, y el status del cachoRequest
+	 */
+	@GET
+	@Path("/networkState")
+	@Produces(MediaType.APPLICATION_JSON)
+	public NetworkState getNetworkStatus() {
+		
+//		Map<String, RetrievalPlan> plansMap = initRepo().getPrevayler().prevalentSystem().getPlansMap();
+		
+//		Map<String, ClientEvent> networkStatus = new HashMap<String, ClientEvent>();
+//		Map<String, List<ClientEvent>> eventsByClientMap = initRepo().getPrevayler().prevalentSystem().getEventsByClientMap();
+//		
+//		for(Map.Entry<String, List<ClientEvent>> clientEventHistory : eventsByClientMap.entrySet()) {
+//			if(CollectionUtils.isEmpty(clientEventHistory.getValue())) {
+//				logger.debug("Nothing to report for client " + clientEventHistory.getKey()+ " - IGONRE");
+//			} else {
+//				int last = clientEventHistory.getValue().size() - 1;
+//				networkStatus.put(clientEventHistory.getKey(), clientEventHistory.getValue().get(last));
+//			}
+//		}
+		
+		Map<String, ClientEvent> strimers = new HashMap<String, ClientEvent>();
+		Map<String, ClientEvent> pushers = new HashMap<String, ClientEvent>();
+		Map<String, ClientEvent> pullers = new HashMap<String, ClientEvent>();
+		List<String> iddles = new ArrayList<String>();
+		
+		for(int i = 1; i<6; i++) {
+			ClientActivityEvent clientActivityEvent = new ClientActivityEvent(CachoDirection.PULL, "localhost", "999"+i, "demoPlanId", "demoClientId",
+					i*1000, i*700, i*1500, 1.1);
+			strimers.put("localhost:999"+i, clientActivityEvent);
+			pushers.put("localhost:999"+i, clientActivityEvent);
+			pullers.put("localhost:999"+i, clientActivityEvent);
+			iddles.add("localhost:999"+i);
+		}
+		
+		NetworkState ns = new NetworkState();
+		ns.setIddles(iddles);
+		ns.setPullers(pullers);
+		ns.setPushers(pushers);
+		ns.setStrimers(strimers);
+		
+		return ns;
+	}
+	
 
 	@GET
 	@Path("/plan")
