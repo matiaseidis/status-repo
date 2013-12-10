@@ -12,7 +12,7 @@ public class ClientStatusEvent extends ClientEvent {
 	private ClientState clientState;
 	
 	public ClientStatusEvent(ClientState clientState, String ip, String port, String clientId,
-			long bandWidth) {
+			double bandWidth) {
 		super(ip, port, clientId, bandWidth);
 		this.setClientState(clientState);
 	}

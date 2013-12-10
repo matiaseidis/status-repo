@@ -64,10 +64,8 @@ public class RepositoryManager {
 	}
 
 	public void logClientActivityEvent(ClientActivityEvent event) {
-		System.out.println("RepositoryManager.logPullEvent()");
-		
 			this.getPrevayler().execute(
-					new ClientActivityEventRegistration(event));
+					new ClientActivityEventRegistration<ClientActivityEvent>(event));
 	}
 	
 	public void logClientStatusEvent(ClientStatusEvent event) {

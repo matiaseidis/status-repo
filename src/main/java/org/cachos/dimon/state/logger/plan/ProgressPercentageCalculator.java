@@ -33,7 +33,7 @@ public class ProgressPercentageCalculator {
 		long totalBytes = byteTo - byteFrom;
 		long transferredBytes = byteCurrent - byteFrom; 
 		long progressPercentage = (transferredBytes * 100) / totalBytes;
-		logger.debug("progress for "+this.getName()+": ["+progressPercentage+"] -> from:["+this.getByteFrom()+"] to:["+this.getByteTo()+"] current:["+this.getByteCurrent()+"]");
+//		logger.debug("progress for "+this.getName()+": ["+progressPercentage+"] -> from:["+this.getByteFrom()+"] to:["+this.getByteTo()+"] current:["+this.getByteCurrent()+"]");
 		return progressPercentage;
 	}
 

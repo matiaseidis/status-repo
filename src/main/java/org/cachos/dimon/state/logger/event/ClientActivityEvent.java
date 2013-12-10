@@ -1,5 +1,7 @@
 package org.cachos.dimon.state.logger.event;
 
+import java.text.SimpleDateFormat;
+
 import org.cachos.dimon.state.logger.event.type.CachoDirection;
 import org.cachos.dimon.state.logger.plan.ProgressPercentageCalculator;
 
@@ -76,4 +78,8 @@ public class ClientActivityEvent extends ClientEvent {
 	public String getEventType() {
 		return this.getCachoDirection().name();
 	}
+	
+//	public String getTextDate() {
+//		return new SimpleDateFormat("dd/MM/yyyy").format(this.getDate());
+//	}
 }

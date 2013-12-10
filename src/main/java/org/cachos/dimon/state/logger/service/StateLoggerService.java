@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.cachos.dimon.state.logger.event.ClientActivityEvent;
 import org.cachos.dimon.state.logger.event.ClientEvent;
@@ -33,55 +34,96 @@ import org.codehaus.jettison.json.JSONObject;
 public class StateLoggerService {
 
 	static Logger logger = Logger.getLogger(StateLoggerService.class.getName());
-	
+
 	/**
 	 * 
-	 * @return por cada nodo del cluster, 
-	 * si esta recibiendo o enviando, y el status del cachoRequest
+	 * @return por cada nodo del cluster, si esta recibiendo o enviando, y el
+	 *         status del cachoRequest
 	 */
 	@GET
 	@Path("/networkState")
 	@Produces(MediaType.APPLICATION_JSON)
 	public NetworkState getNetworkStatus() {
+
+		NetworkState ns = new NetworkState();
+
+		boolean demo = true; // real vs demo
 		
-//		Map<String, RetrievalPlan> plansMap = initRepo().getPrevayler().prevalentSystem().getPlansMap();
-		
-//		Map<String, ClientEvent> networkStatus = new HashMap<String, ClientEvent>();
-//		Map<String, List<ClientEvent>> eventsByClientMap = initRepo().getPrevayler().prevalentSystem().getEventsByClientMap();
-//		
-//		for(Map.Entry<String, List<ClientEvent>> clientEventHistory : eventsByClientMap.entrySet()) {
-//			if(CollectionUtils.isEmpty(clientEventHistory.getValue())) {
-//				logger.debug("Nothing to report for client " + clientEventHistory.getKey()+ " - IGONRE");
-//			} else {
-//				int last = clientEventHistory.getValue().size() - 1;
-//				networkStatus.put(clientEventHistory.getKey(), clientEventHistory.getValue().get(last));
-//			}
-//		}
-		
-		Map<String, ClientEvent> strimers = new HashMap<String, ClientEvent>();
-		Map<String, ClientEvent> pushers = new HashMap<String, ClientEvent>();
-		Map<String, ClientEvent> pullers = new HashMap<String, ClientEvent>();
-		List<String> iddles = new ArrayList<String>();
-		
-		for(int i = 1; i<6; i++) {
-			ClientActivityEvent clientActivityEvent = new ClientActivityEvent(CachoDirection.PULL, "localhost", "999"+i, "demoPlanId", "demoClientId",
-					i*1000, i*700, i*1500, 1.1);
-			strimers.put("localhost:999"+i, clientActivityEvent);
-			pushers.put("localhost:999"+i, clientActivityEvent);
-			pullers.put("localhost:999"+i, clientActivityEvent);
-			iddles.add("localhost:999"+i);
+		Map<String, List<ClientEvent>> eventsByClientMap = initRepo().getPrevayler().prevalentSystem()
+				.getEventsByClientMap();
+
+		if(!eventsByClientMap.isEmpty()) {
+			demo = false;
 		}
 		
-		NetworkState ns = new NetworkState();
+		for (Map.Entry<String, List<ClientEvent>> clientEventHistory : eventsByClientMap.entrySet()) {
+			if (CollectionUtils.isEmpty(clientEventHistory.getValue())) {
+				logger.debug("Nothing to report for client " + clientEventHistory.getKey() + " - IGONRE");
+				break;
+			}
+			int last = clientEventHistory.getValue().size() - 1;
+			ClientEvent clientEvent = clientEventHistory.getValue().get(last);
+			addToReport(ns, clientEvent);
+			
+		}
+		
+		if (demo) {
+			this.fillDemo(ns);
+		}
+		return ns;
+	}
+
+	private String key(ClientActivityEvent clientEvent) {
+		return clientEvent.getIp() + ":" + clientEvent.getPort() + "-" + clientEvent.getByteFrom() + ":" +  clientEvent.getByteTo();
+	}
+
+	private void fillDemo(NetworkState ns) {
+		Map<String, ClientActivityEvent> strimers = new HashMap<String, ClientActivityEvent>();
+		Map<String, ClientActivityEvent> pushers = new HashMap<String, ClientActivityEvent>();
+		Map<String, ClientActivityEvent> pullers = new HashMap<String, ClientActivityEvent>();
+		List<ClientStatusEvent> iddles = new ArrayList<ClientStatusEvent>();
+
+		for (int i = 1; i < 6; i++) {
+			ClientActivityEvent clientActivityEvent = new ClientActivityEvent(CachoDirection.PULL, "localhost", "999"
+					+ i, "demoPlanId", "demoClientId", i * 1000, i * 700, i * 1500, 1.1);
+			strimers.put("localhost:999" + i, clientActivityEvent);
+			pushers.put("localhost:999" + i, clientActivityEvent);
+			pullers.put("localhost:999" + i, clientActivityEvent);
+			iddles.add(new ClientStatusEvent(ClientState.ALIVE, "localhost", "" + 999 + i, "clientId", 2.2D));
+		}
+
 		ns.setIddles(iddles);
 		ns.setPullers(pullers);
 		ns.setPushers(pushers);
 		ns.setStrimers(strimers);
+	}
+
+	private void addToReport(NetworkState ns, ClientEvent clientEvent) {
 		
-		return ns;
+		if(clientEvent instanceof ClientStatusEvent) {
+			ns.getIddles().add((ClientStatusEvent)clientEvent);
+		} else {
+			ClientActivityEvent cae = (ClientActivityEvent) clientEvent;
+			switch (cae.getCachoDirection()) {
+			case PULL:
+				String planId = cae.getPlanId(); // el planId del retrieval plan actual
+				//TODO obtener los pulls del peer para este retrieval plan
+				ns.getPullers().put(this.key(cae), cae);
+				break;
+			case PUSH:
+				ns.getPushers().put(this.key(cae), cae);
+				break;
+			default:
+				/*
+				 * STREAMING TODO agregar al enum
+				 */
+				ns.getStrimers().put(this.key(cae), cae);
+				break;
+			}
+		}
+		
 	}
 	
-
 	@GET
 	@Path("/plan")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -165,8 +207,7 @@ public class StateLoggerService {
 			for (int i = 0; i < messageLenght; i++) {
 				JSONObject cacho = activity.getJSONArray("cachos").getJSONObject(i);
 				repo.logClientActivityEvent(new ClientActivityEvent(CachoDirection.forEvent(cacho.getString("action")),
-						// cacho.getString("ip")
-						"lalala", cacho.getString("port"), cacho.getString("planId"), cacho.getString("clientId"),
+						 cacho.getString("ip"), cacho.getString("port"), cacho.getString("planId"), cacho.getString("clientId"),
 						cacho.getLong("byteCurrent"), cacho.getLong("byteFrom"), cacho.getLong("byteTo"), cacho
 								.getDouble("bandWidth")));
 			}
